@@ -1,5 +1,6 @@
 using System;
 using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
 using Zenject;
 using AvatarChat.Main;
 using AvatarChat.Network.Signals;
@@ -15,33 +16,41 @@ namespace AvatarChat.Network.Handlers
 
         public void StartHost()
         {
-            EnsureNetworkManagerExists();
-            NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
-            NetworkManager.Singleton.OnServerStarted += () =>
-                _signalBus.Fire(new NetworkStartedSignal(true, true, NetworkManager.Singleton.LocalClientId));
-
-            NetworkManager.Singleton.StartHost();
-            SubscribeServerEvents();
+            SetupAndStart(() => NetworkManager.Singleton.StartHost(), true, true);
         }
 
         public void StartClient()
         {
-            EnsureNetworkManagerExists();
-            NetworkManager.Singleton.OnClientStarted += () =>
-                _signalBus.Fire(new NetworkStartedSignal(false, false, NetworkManager.Singleton.LocalClientId));
-
-            NetworkManager.Singleton.StartClient();
+            SetupAndStart(() => NetworkManager.Singleton.StartClient(), false, false);
         }
 
         public void StartServer()
         {
-            EnsureNetworkManagerExists();
-            NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
-            NetworkManager.Singleton.OnServerStarted += () =>
-                _signalBus.Fire(new NetworkStartedSignal(true, false, NetworkManager.Singleton.LocalClientId));
+            SetupAndStart(() => NetworkManager.Singleton.StartServer(), true, false);
+        }
 
-            NetworkManager.Singleton.StartServer();
-            SubscribeServerEvents();
+        private void SetupAndStart(Func<bool> startAction, bool isServer, bool isHost)
+        {
+            EnsureNetworkManagerExists();
+            ApplyTransportSettings();
+
+            if (isServer) NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
+
+            if (startAction.Invoke())
+            {
+                _signalBus.Fire(new NetworkStartedSignal(isServer, isHost, NetworkManager.Singleton.LocalClientId));
+                if (isServer) SubscribeServerEvents();
+            }
+        }
+
+        private void ApplyTransportSettings()
+        {
+            var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+            if (transport != null)
+            {
+                transport.ConnectionData.Address = _config.Address;
+                transport.ConnectionData.Port = _config.Port;
+            }
         }
 
         public void Shutdown()
@@ -56,17 +65,13 @@ namespace AvatarChat.Network.Handlers
         private void EnsureNetworkManagerExists()
         {
             if (NetworkManager.Singleton != null) return;
-
             Instantiate(_config.NetworkManagerPrefab);
         }
 
         private void SubscribeServerEvents()
         {
-            NetworkManager.Singleton.OnClientConnectedCallback += (id) =>
-                _signalBus.Fire(new PlayerJoinedSignal(id));
-
-            NetworkManager.Singleton.OnClientDisconnectCallback += (id) =>
-                _signalBus.Fire(new PlayerLeftSignal(id));
+            NetworkManager.Singleton.OnClientConnectedCallback += (id) => _signalBus.Fire(new PlayerJoinedSignal(id));
+            NetworkManager.Singleton.OnClientDisconnectCallback += (id) => _signalBus.Fire(new PlayerLeftSignal(id));
         }
 
         private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)

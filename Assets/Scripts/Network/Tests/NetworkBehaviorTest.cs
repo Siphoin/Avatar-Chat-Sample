@@ -4,38 +4,38 @@ using UniRx;
 using AvatarChat.Network.Handlers;
 using AvatarChat.Network.Signals;
 using AvatarChat.Main;
+using AvatarChat.Core.InputSystem;
+using AvatarChat.Network.Configs;
 
 namespace AvatarChat.Tests
 {
     public class NetworkBehaviorTest : MonoBehaviour
     {
         [Inject] private INetworkHandler _networkHandler;
+        [Inject] private IInputSystem _inputSystem;
         [Inject] private SignalBus _signalBus;
+        [Inject] private NetworkHandlerConfig _config;
 
         private void Start()
         {
             _signalBus.GetStream<NetworkStartedSignal>()
-                .Subscribe(signal =>
-                {
-                    string role = signal.IsHost ? "Host" : signal.IsServer ? "Server" : "Client";
-                    Debug.Log($"[Test] Network Started. Role: {role}, ID: {signal.LocalClientId}");
-                })
+                .Subscribe(signal => Debug.Log($"[Test] Network Started. ID: {signal.LocalClientId}"))
                 .AddTo(this);
 
-            _signalBus.GetStream<PlayerJoinedSignal>()
-                .Subscribe(signal =>
-                {
-                    Debug.Log($"[Test] Player joined with ID: {signal.ClientId}");
-                })
-                .AddTo(this);
+            _inputSystem.AddListener(OnKeyDown, StandaloneInputEventType.KeyDown);
         }
 
-        private void Update()
+        private void OnKeyDown(KeyCode keyCode)
         {
-            if (Input.GetKeyDown(KeyCode.H)) _networkHandler.StartHost();
-            if (Input.GetKeyDown(KeyCode.C)) _networkHandler.StartClient();
-            if (Input.GetKeyDown(KeyCode.S)) _networkHandler.StartServer();
-            if (Input.GetKeyDown(KeyCode.Q)) _networkHandler.Shutdown();
+            if (keyCode == _config.GetHotkey("Host")) _networkHandler.StartHost();
+            else if (keyCode == _config.GetHotkey("Client")) _networkHandler.StartClient();
+            else if (keyCode == _config.GetHotkey("Server")) _networkHandler.StartServer();
+            else if (keyCode == _config.GetHotkey("Shutdown")) _networkHandler.Shutdown();
+        }
+
+        private void OnDestroy()
+        {
+            _inputSystem.RemoveListener(OnKeyDown, StandaloneInputEventType.KeyDown);
         }
     }
 }
