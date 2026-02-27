@@ -16,30 +16,11 @@ namespace AvatarChat.Network.Handlers
 
         public NetworkList<NetworkRoom> ActiveRooms { get; private set; }
 
-        private void Awake()
-        {
-            ActiveRooms = new();
-        }
+        private void Awake() => ActiveRooms = new();
 
-        public void CreateRoom(FixedString64Bytes roomName, int maxPlayers)
-        {
-            if (IsServer)
-            {
-                var instanceId = Guid.NewGuid().ToString();
-                var newRoom = new NetworkRoom
-                {
-                    RoomName = roomName,
-                    InstanceId = instanceId,
-                    MaxPlayers = maxPlayers,
-                    CurrentPlayers = 0
-                };
-                ActiveRooms.Add(newRoom);
-
-                _signalBus.Fire(new RoomCreatedSignal(instanceId, roomName.ToString()));
-
-                NetworkManager.Singleton.SceneManager.LoadScene(roomName.ToString(), LoadSceneMode.Additive);
-            }
-        }
+        public void RequestCreateRoom(FixedString64Bytes roomName, int maxPlayers) => CreateRoomServerRpc(roomName, maxPlayers);
+        public void RequestJoinRoom(FixedString64Bytes instanceId) => JoinRoomServerRpc(instanceId);
+        public void RequestLeaveRoom(FixedString64Bytes instanceId) => LeaveRoomServerRpc(instanceId);
 
         public void RemoveRoom(FixedString64Bytes instanceId)
         {
@@ -49,25 +30,49 @@ namespace AvatarChat.Network.Handlers
             {
                 if (ActiveRooms[i].InstanceId == instanceId)
                 {
+                    var sceneName = ActiveRooms[i].RoomName.ToString();
                     ActiveRooms.RemoveAt(i);
-                    _signalBus.Fire(new RoomRemovedSignal(instanceId.ToString()));
+
+                    var scene = SceneManager.GetSceneByName(sceneName);
+                    if (scene.isLoaded)
+                    {
+                        NetworkManager.Singleton.SceneManager.UnloadScene(scene);
+                    }
                     break;
                 }
             }
         }
 
-        public void JoinRoom(FixedString64Bytes instanceId)
+        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+        private void CreateRoomServerRpc(FixedString64Bytes roomName, int maxPlayers, RpcParams rpcParams = default)
         {
-            JoinRoomServerRpc(instanceId);
+            var instanceId = Guid.NewGuid().ToString();
+            ActiveRooms.Add(new NetworkRoom { RoomName = roomName, InstanceId = instanceId, MaxPlayers = maxPlayers, CurrentPlayers = 1 });
+
+            NetworkManager.Singleton.SceneManager.LoadScene(roomName.ToString(), LoadSceneMode.Additive);
+
+            ConfirmActionClientRpc(instanceId, roomName, true, RpcTarget.Single(rpcParams.Receive.SenderClientId, RpcTargetUse.Temp));
         }
 
         [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
         private void JoinRoomServerRpc(FixedString64Bytes instanceId, RpcParams rpcParams = default)
         {
-            var clientId = rpcParams.Receive.SenderClientId;
-            _signalBus.Fire(new PlayerJoinedRoomSignal(clientId, instanceId.ToString()));
+            ConfirmActionClientRpc(instanceId, "", true, RpcTarget.Single(rpcParams.Receive.SenderClientId, RpcTargetUse.Temp));
+        }
 
-            Debug.Log($"[Server] Client {clientId} joined room {instanceId}");
+        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+        private void LeaveRoomServerRpc(FixedString64Bytes instanceId, RpcParams rpcParams = default)
+        {
+            ConfirmActionClientRpc(instanceId, "", false, RpcTarget.Single(rpcParams.Receive.SenderClientId, RpcTargetUse.Temp));
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        private void ConfirmActionClientRpc(FixedString64Bytes instanceId, FixedString64Bytes sceneName, bool isJoin, RpcParams delivery)
+        {
+            if (isJoin)
+                _signalBus.Fire(new PlayerJoinedRoomSignal(NetworkManager.Singleton.LocalClientId, instanceId.ToString()));
+            else
+                _signalBus.Fire(new PlayerLeftRoomSignal(NetworkManager.Singleton.LocalClientId, instanceId.ToString()));
         }
     }
 }

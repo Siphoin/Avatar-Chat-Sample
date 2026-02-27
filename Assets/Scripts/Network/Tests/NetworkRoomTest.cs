@@ -17,30 +17,46 @@ namespace AvatarChat.Network.Test
 
         private void Start()
         {
-            _signalBus.GetStream<RoomCreatedSignal>()
-                .Subscribe(OnRoomCreated)
-                .AddTo(this);
-
             _signalBus.GetStream<PlayerJoinedRoomSignal>()
-                .Subscribe(sig => Debug.Log($"Signal: Player {sig.ClientId} is in {sig.InstanceId}"))
+                .Where(sig => sig.ClientId == NetworkManager.Singleton.LocalClientId)
+                .Subscribe(sig => Debug.Log($"[Test] Local Player joined room: {sig.InstanceId}"))
                 .AddTo(this);
-        }
 
-        private void OnRoomCreated(RoomCreatedSignal signal)
-        {
-            var roomHandler = _networkHandler.GetSubHandler<NetworkRoomHandler>();
-            if (roomHandler != null)
-            {
-                roomHandler.JoinRoom(signal.InstanceId);
-            }
+            _signalBus.GetStream<PlayerLeftRoomSignal>()
+                .Where(sig => sig.ClientId == NetworkManager.Singleton.LocalClientId)
+                .Subscribe(_ => Debug.Log("Test] Local Player left room"))
+                .AddTo(this);
         }
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.F6) && NetworkManager.Singleton.IsServer)
+            if (Input.GetKeyDown(KeyCode.F5))
+            {
+                _networkHandler.StartHost();
+            }
+
+            if (Input.GetKeyDown(KeyCode.F6))
             {
                 var roomHandler = _networkHandler.GetSubHandler<NetworkRoomHandler>();
-                roomHandler?.CreateRoom(_testSceneName, 10);
+                roomHandler?.RequestCreateRoom(_testSceneName, 10);
+            }
+
+            if (Input.GetKeyDown(KeyCode.F7))
+            {
+                var roomHandler = _networkHandler.GetSubHandler<NetworkRoomHandler>();
+                if (roomHandler != null && roomHandler.ActiveRooms.Count > 0)
+                {
+                    roomHandler.RequestLeaveRoom(roomHandler.ActiveRooms[0].InstanceId);
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.F8) && NetworkManager.Singleton.IsServer)
+            {
+                var roomHandler = _networkHandler.GetSubHandler<NetworkRoomHandler>();
+                if (roomHandler != null && roomHandler.ActiveRooms.Count > 0)
+                {
+                    roomHandler.RemoveRoom(roomHandler.ActiveRooms[0].InstanceId);
+                }
             }
         }
     }
