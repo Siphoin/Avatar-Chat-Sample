@@ -1,11 +1,14 @@
+using AvatarChat.Main;
+using AvatarChat.Network.Configs;
+using AvatarChat.Network.Signals;
+using Sirenix.Utilities;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
-using Zenject;
-using AvatarChat.Main;
-using AvatarChat.Network.Signals;
-using AvatarChat.Network.Configs;
 using UnityEngine;
+using Zenject;
 
 namespace AvatarChat.Network.Handlers
 {
@@ -13,6 +16,13 @@ namespace AvatarChat.Network.Handlers
     {
         [Inject] private SignalBus _signalBus;
         [Inject] private NetworkHandlerConfig _config;
+
+        private readonly List<SubNetworkHandler> _subHandlers = new();
+
+        public T GetSubHandler<T>()
+        {
+            return _subHandlers.OfType<T>().FirstOrDefault();
+        }
 
         public void StartHost()
         {
@@ -39,8 +49,36 @@ namespace AvatarChat.Network.Handlers
             if (startAction.Invoke())
             {
                 _signalBus.Fire(new NetworkStartedSignal(isServer, isHost, NetworkManager.Singleton.LocalClientId));
-                if (isServer) SubscribeServerEvents();
+
+                if (isServer)
+                {
+                    SubscribeServerEvents();
+                    SpawnSubHandlers();
+                }
+                else
+                {
+                    FindSubHandlers();
+                }
             }
+        }
+
+        private void SpawnSubHandlers()
+        {
+            var prefabs = Resources.LoadAll<SubNetworkHandler>("Network/NetworkSubHandlers");
+            foreach (var prefab in prefabs)
+            {
+                var handler = Instantiate(prefab, transform);
+                var netObj = handler.GetComponent<NetworkObject>();
+                netObj.Spawn(true);
+                _subHandlers.Add(handler);
+            }
+        }
+
+        private void FindSubHandlers()
+        {
+            _subHandlers.Clear();
+            var handlers = GetComponentsInChildren<SubNetworkHandler>(true);
+            _subHandlers.AddRange(handlers);
         }
 
         private void ApplyTransportSettings()
@@ -58,7 +96,15 @@ namespace AvatarChat.Network.Handlers
             if (NetworkManager.Singleton != null)
             {
                 NetworkManager.Singleton.Shutdown();
+
+                foreach (var handler in _subHandlers.Where(handler => handler != null))
+                {
+                    var netObj = handler.GetComponent<NetworkObject>();
+                    if (netObj != null && netObj.IsSpawned) netObj.Despawn();
+                }
+
                 Destroy(NetworkManager.Singleton.gameObject);
+                _subHandlers.Clear();
             }
         }
 

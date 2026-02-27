@@ -272,6 +272,52 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _asSingle: 1
   _instance: {fileID: 7332378977267360835}
+--- !u!1 &5889937345433634802
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5228720092490786806}
+  - component: {fileID: 777348533885462742}
+  m_Layer: 0
+  m_Name: NetworkRoomTest
+  m_TagString: EditorOnly
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5228720092490786806
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5889937345433634802}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6708633161386073051}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &777348533885462742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5889937345433634802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2901b0acc15e6de49a32ae6e25a46d5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _testSceneName: GameScene
+  _maxPlayers: 10
 --- !u!1 &6019035752313781143
 GameObject:
   m_ObjectHideFlags: 0
@@ -510,6 +556,7 @@ Transform:
   - {fileID: 7708663844615820370}
   - {fileID: 1038504480207553478}
   - {fileID: 8287677053572058624}
+  - {fileID: 5228720092490786806}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7840044310555351260

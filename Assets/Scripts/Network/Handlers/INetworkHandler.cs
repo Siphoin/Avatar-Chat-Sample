@@ -8,5 +8,6 @@ namespace AvatarChat.Network.Handlers
         void StartClient();
         void StartServer();
         void Shutdown();
+        public T GetSubHandler<T>();
     }
 }
