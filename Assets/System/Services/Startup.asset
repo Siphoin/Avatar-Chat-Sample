@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8dd189f7a5688248b257369c76a7214, type: 3}
+  m_Name: Startup
+  m_EditorClassIdentifier: 
+  _guidObject: ec5af3c6-1015-4e5d-a1f2-3ab0be5e3450
+  _targetFPS: 60
+  _isDevBuild: 1
+  _loadStartupScene: 0
