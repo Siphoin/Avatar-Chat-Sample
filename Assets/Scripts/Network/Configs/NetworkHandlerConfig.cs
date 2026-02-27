@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AvatarChat.Main.Configs;
+using Unity.Netcode;
+using UnityEngine;
 
-namespace Assets.Scripts.Network.Configs
+namespace AvatarChat.Network.Configs
 {
-    internal class NetworkHandlerConfig
+    [CreateAssetMenu(fileName = "NetworkHandlerConfig", menuName = "Configs/Network/Handler")]
+    public class NetworkHandlerConfig : ScriptableConfig
     {
+        [SerializeField] private NetworkManager _networkManagerPrefab;
+        public NetworkManager NetworkManagerPrefab => _networkManagerPrefab;
     }
 }

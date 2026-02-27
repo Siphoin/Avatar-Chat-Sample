@@ -3,16 +3,19 @@ using Unity.Netcode;
 using Zenject;
 using AvatarChat.Main;
 using AvatarChat.Network.Signals;
-using System.Text;
+using AvatarChat.Network.Configs;
+using UnityEngine;
 
 namespace AvatarChat.Network.Handlers
 {
-    public class NetworkHandler : NetworkBehaviour, INetworkHandler
+    public class NetworkHandler : MonoBehaviour, INetworkHandler
     {
         [Inject] private SignalBus _signalBus;
+        [Inject] private NetworkHandlerConfig _config;
 
         public void StartHost()
         {
+            EnsureNetworkManagerExists();
             NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
             NetworkManager.Singleton.OnServerStarted += () =>
                 _signalBus.Fire(new NetworkStartedSignal(true, true, NetworkManager.Singleton.LocalClientId));
@@ -23,6 +26,7 @@ namespace AvatarChat.Network.Handlers
 
         public void StartClient()
         {
+            EnsureNetworkManagerExists();
             NetworkManager.Singleton.OnClientStarted += () =>
                 _signalBus.Fire(new NetworkStartedSignal(false, false, NetworkManager.Singleton.LocalClientId));
 
@@ -31,6 +35,7 @@ namespace AvatarChat.Network.Handlers
 
         public void StartServer()
         {
+            EnsureNetworkManagerExists();
             NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
             NetworkManager.Singleton.OnServerStarted += () =>
                 _signalBus.Fire(new NetworkStartedSignal(true, false, NetworkManager.Singleton.LocalClientId));
@@ -41,7 +46,18 @@ namespace AvatarChat.Network.Handlers
 
         public void Shutdown()
         {
-            NetworkManager.Singleton.Shutdown();
+            if (NetworkManager.Singleton != null)
+            {
+                NetworkManager.Singleton.Shutdown();
+                Destroy(NetworkManager.Singleton.gameObject);
+            }
+        }
+
+        private void EnsureNetworkManagerExists()
+        {
+            if (NetworkManager.Singleton != null) return;
+
+            Instantiate(_config.NetworkManagerPrefab);
         }
 
         private void SubscribeServerEvents()
