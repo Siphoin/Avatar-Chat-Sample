@@ -7,6 +7,7 @@ using System;
 using AvatarChat.Main;
 using AvatarChat.Network.Signals;
 using Zenject;
+using System.Collections.Generic;
 
 namespace AvatarChat.Network.Handlers
 {
@@ -15,6 +16,7 @@ namespace AvatarChat.Network.Handlers
         [Inject] private SignalBus _signalBus;
 
         public NetworkList<NetworkRoom> ActiveRooms { get; private set; }
+        private Dictionary<ulong, NetworkGuid> _playerToRoomMap = new();
 
         private string _expectedSceneName;
 
@@ -23,45 +25,61 @@ namespace AvatarChat.Network.Handlers
         public override void OnNetworkSpawn()
         {
             NetworkManager.Singleton.SceneManager.VerifySceneBeforeLoading = VerifyScene;
+
+            if (IsServer)
+            {
+                NetworkManager.Singleton.OnClientDisconnectCallback += OnServerClientDisconnect;
+            }
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            if (IsServer && NetworkManager.Singleton != null)
+            {
+                NetworkManager.Singleton.OnClientDisconnectCallback -= OnServerClientDisconnect;
+            }
+        }
+
+        private void OnServerClientDisconnect(ulong clientId)
+        {
+            if (_playerToRoomMap.TryGetValue(clientId, out NetworkGuid instanceId))
+            {
+                HandlePlayerExit(instanceId, clientId);
+                _playerToRoomMap.Remove(clientId);
+            }
         }
 
         private bool VerifyScene(int sceneIndex, string sceneName, LoadSceneMode loadMode)
         {
             if (IsServer) return true;
-
             return sceneName == _expectedSceneName;
         }
 
-        public void RequestCreateRoom(FixedString64Bytes roomName, int maxPlayers) => CreateRoomServerRpc(roomName, maxPlayers);
-        public void RequestJoinRoom(FixedString64Bytes instanceId) => JoinRoomServerRpc(instanceId);
-        public void RequestLeaveRoom(FixedString64Bytes instanceId) => LeaveRoomServerRpc(instanceId);
-
-        public void RemoveRoom(FixedString64Bytes instanceId)
+        public void RequestJoinOrCreateRoom(FixedString128Bytes roomName, int maxPlayers)
         {
-            if (!IsServer) return;
-
-            for (int i = 0; i < ActiveRooms.Count; i++)
-            {
-                if (ActiveRooms[i].InstanceId == instanceId)
-                {
-                    var sceneName = ActiveRooms[i].RoomName.ToString();
-                    ActiveRooms.RemoveAt(i);
-
-                    var scene = SceneManager.GetSceneByName(sceneName);
-                    if (scene.isLoaded)
-                    {
-                        NetworkManager.Singleton.SceneManager.UnloadScene(scene);
-                    }
-                    break;
-                }
-            }
+            JoinOrCreateRoomServerRpc(roomName, maxPlayers);
         }
 
         [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-        private void CreateRoomServerRpc(FixedString64Bytes roomName, int maxPlayers, RpcParams rpcParams = default)
+        private void JoinOrCreateRoomServerRpc(FixedString128Bytes roomName, int maxPlayers, RpcParams rpcParams = default)
         {
-            var instanceId = Guid.NewGuid().ToString();
             var senderId = rpcParams.Receive.SenderClientId;
+
+            for (int i = 0; i < ActiveRooms.Count; i++)
+            {
+                if (ActiveRooms[i].RoomName == roomName)
+                {
+                    JoinRoomInternal(i, senderId);
+                    return;
+                }
+            }
+
+            CreateRoomInternal(roomName, maxPlayers, senderId);
+        }
+
+        private void CreateRoomInternal(FixedString128Bytes roomName, int maxPlayers, ulong clientId)
+        {
+            NetworkGuid instanceId = Guid.NewGuid();
 
             ActiveRooms.Add(new NetworkRoom
             {
@@ -70,49 +88,69 @@ namespace AvatarChat.Network.Handlers
                 MaxPlayers = maxPlayers,
                 CurrentPlayers = 1
             });
-            PrepareClientForSceneLoadClientRpc(roomName, RpcTarget.Single(senderId, RpcTargetUse.Temp));
 
+            _playerToRoomMap[clientId] = instanceId;
+
+            PrepareClientForSceneLoadClientRpc(roomName, RpcTarget.Single(clientId, RpcTargetUse.Temp));
             NetworkManager.Singleton.SceneManager.LoadScene(roomName.ToString(), LoadSceneMode.Additive);
-
-            ConfirmActionClientRpc(instanceId, roomName, true, RpcTarget.Single(senderId, RpcTargetUse.Temp));
+            ConfirmActionClientRpc(instanceId, roomName, true, RpcTarget.Single(clientId, RpcTargetUse.Temp));
         }
 
-        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-        private void JoinRoomServerRpc(FixedString64Bytes instanceId, RpcParams rpcParams = default)
+        private void JoinRoomInternal(int roomIndex, ulong clientId)
         {
-            var senderId = rpcParams.Receive.SenderClientId;
+            var room = ActiveRooms[roomIndex];
+            if (room.CurrentPlayers >= room.MaxPlayers) return;
 
+            room.CurrentPlayers++;
+            ActiveRooms[roomIndex] = room;
+
+            _playerToRoomMap[clientId] = room.InstanceId;
+
+            PrepareClientForSceneLoadClientRpc(room.RoomName, RpcTarget.Single(clientId, RpcTargetUse.Temp));
+            NetworkManager.Singleton.SceneManager.LoadScene(room.RoomName.ToString(), LoadSceneMode.Additive);
+            ConfirmActionClientRpc(room.InstanceId, room.RoomName, true, RpcTarget.Single(clientId, RpcTargetUse.Temp));
+        }
+
+        private void HandlePlayerExit(NetworkGuid instanceId, ulong clientId)
+        {
             for (int i = 0; i < ActiveRooms.Count; i++)
             {
-                if (ActiveRooms[i].InstanceId == instanceId)
+                if (ActiveRooms[i].InstanceId.Equals(instanceId))
                 {
                     var room = ActiveRooms[i];
-                    room.CurrentPlayers++;
-                    ActiveRooms[i] = room;
+                    room.CurrentPlayers--;
 
-                    PrepareClientForSceneLoadClientRpc(room.RoomName, RpcTarget.Single(senderId, RpcTargetUse.Temp));
-                    NetworkManager.Singleton.SceneManager.LoadScene(room.RoomName.ToString(), LoadSceneMode.Additive);
-
-                    ConfirmActionClientRpc(instanceId, room.RoomName, true, RpcTarget.Single(senderId, RpcTargetUse.Temp));
+                    if (room.CurrentPlayers <= 0)
+                    {
+                        RemoveRoom(instanceId);
+                    }
+                    else
+                    {
+                        ActiveRooms[i] = room;
+                    }
                     break;
                 }
             }
         }
 
+        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+        private void LeaveRoomServerRpc(NetworkGuid instanceId, RpcParams rpcParams = default)
+        {
+            var clientId = rpcParams.Receive.SenderClientId;
+            HandlePlayerExit(instanceId, clientId);
+            _playerToRoomMap.Remove(clientId);
+
+            ConfirmActionClientRpc(instanceId, "", false, RpcTarget.Single(clientId, RpcTargetUse.Temp));
+        }
+
         [Rpc(SendTo.SpecifiedInParams)]
-        private void PrepareClientForSceneLoadClientRpc(FixedString64Bytes sceneName, RpcParams delivery)
+        private void PrepareClientForSceneLoadClientRpc(FixedString128Bytes sceneName, RpcParams delivery)
         {
             _expectedSceneName = sceneName.ToString();
         }
 
-        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-        private void LeaveRoomServerRpc(FixedString64Bytes instanceId, RpcParams rpcParams = default)
-        {
-            ConfirmActionClientRpc(instanceId, "", false, RpcTarget.Single(rpcParams.Receive.SenderClientId, RpcTargetUse.Temp));
-        }
-
         [Rpc(SendTo.SpecifiedInParams)]
-        private void ConfirmActionClientRpc(FixedString64Bytes instanceId, FixedString64Bytes sceneName, bool isJoin, RpcParams delivery)
+        private void ConfirmActionClientRpc(NetworkGuid instanceId, FixedString128Bytes sceneName, bool isJoin, RpcParams delivery)
         {
             if (isJoin)
             {
@@ -120,17 +158,57 @@ namespace AvatarChat.Network.Handlers
             }
             else
             {
-                if (!string.IsNullOrEmpty(_expectedSceneName))
-                {
-                    var scene = SceneManager.GetSceneByName(_expectedSceneName);
-                    if (scene.isLoaded)
-                    {
-                        SceneManager.UnloadSceneAsync(scene);
-                    }
-                }
+                LeaveRoomLocalCleanup(instanceId.ToString());
+            }
+        }
 
-                _expectedSceneName = null;
-                _signalBus.Fire(new PlayerLeftRoomSignal(NetworkManager.Singleton.LocalClientId, instanceId.ToString()));
+        private void LeaveRoomLocalCleanup(string instanceId)
+        {
+            if (!string.IsNullOrEmpty(_expectedSceneName))
+            {
+                var scene = SceneManager.GetSceneByName(_expectedSceneName);
+                if (scene.isLoaded) SceneManager.UnloadSceneAsync(scene);
+            }
+
+            _expectedSceneName = null;
+            _signalBus.Fire(new PlayerLeftRoomSignal(NetworkManager.Singleton.LocalClientId, instanceId));
+        }
+
+        public void RequestCreateRoom(FixedString128Bytes roomName, int maxPlayers) => CreateRoomServerRpc(roomName, maxPlayers);
+        public void RequestJoinRoom(NetworkGuid instanceId) => JoinRoomServerRpc(instanceId);
+        public void RequestLeaveRoom(NetworkGuid instanceId) => LeaveRoomServerRpc(instanceId);
+
+        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+        private void CreateRoomServerRpc(FixedString128Bytes roomName, int maxPlayers, RpcParams rpcParams = default)
+            => CreateRoomInternal(roomName, maxPlayers, rpcParams.Receive.SenderClientId);
+
+        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+        private void JoinRoomServerRpc(NetworkGuid instanceId, RpcParams rpcParams = default)
+        {
+            for (int i = 0; i < ActiveRooms.Count; i++)
+            {
+                if (ActiveRooms[i].InstanceId.Equals(instanceId))
+                {
+                    JoinRoomInternal(i, rpcParams.Receive.SenderClientId);
+                    break;
+                }
+            }
+        }
+
+        public void RemoveRoom(NetworkGuid instanceId)
+        {
+            if (!IsServer) return;
+            for (int i = 0; i < ActiveRooms.Count; i++)
+            {
+                if (ActiveRooms[i].InstanceId.Equals(instanceId))
+                {
+                    var sceneName = ActiveRooms[i].RoomName.ToString();
+                    ActiveRooms.RemoveAt(i);
+
+                    var scene = SceneManager.GetSceneByName(sceneName);
+                    if (scene.isLoaded) NetworkManager.Singleton.SceneManager.UnloadScene(scene);
+                    break;
+                }
             }
         }
     }

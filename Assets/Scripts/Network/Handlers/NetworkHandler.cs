@@ -21,6 +21,7 @@ namespace AvatarChat.Network.Handlers
 
         public T GetSubHandler<T>()
         {
+            if (_subHandlers.Count == 0) FindSubHandlers();
             return _subHandlers.OfType<T>().FirstOrDefault();
         }
 
@@ -77,7 +78,7 @@ namespace AvatarChat.Network.Handlers
         private void FindSubHandlers()
         {
             _subHandlers.Clear();
-            var handlers = GetComponentsInChildren<SubNetworkHandler>(true);
+            var handlers = FindObjectsByType<SubNetworkHandler>(FindObjectsSortMode.None);
             _subHandlers.AddRange(handlers);
         }
 

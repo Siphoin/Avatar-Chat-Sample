@@ -9,6 +9,7 @@ using Unity.Netcode;
 using Zenject;
 using Sirenix.OdinInspector;
 using ReadOnlyAttribute = Sirenix.OdinInspector.ReadOnlyAttribute;
+using UnityEngine;
 
 namespace AvatarChat.Network.Handlers
 {
@@ -17,7 +18,7 @@ namespace AvatarChat.Network.Handlers
         [Inject] private SignalBus _signalBus;
 
         [ShowInInspector, ReadOnly]
-        public NetworkList<NetworkPlayer> ConnectedPlayers { get; private set; }
+        private NetworkList<NetworkPlayer> ConnectedPlayers { get; set; }
         private readonly Dictionary<ulong, string> _pendingNames = new();
 
         private void Awake() => ConnectedPlayers = new NetworkList<NetworkPlayer>();
@@ -28,6 +29,14 @@ namespace AvatarChat.Network.Handlers
             {
                 _signalBus.GetStream<ConnectionApprovedSignal>()
                     .Subscribe(sig => _pendingNames[sig.ClientId] = sig.PlayerName)
+                    .AddTo(this);
+
+                _signalBus.GetStream<PlayerJoinedRoomSignal>()
+                    .Subscribe(sig => UpdatePlayerRoom(sig.ClientId, new(sig.InstanceId) ))
+                    .AddTo(this);
+
+                _signalBus.GetStream<PlayerLeftRoomSignal>()
+                    .Subscribe(sig => UpdatePlayerRoom(sig.ClientId, default))
                     .AddTo(this);
 
                 NetworkManager.Singleton.OnClientConnectedCallback += OnServerClientConnected;
@@ -84,6 +93,34 @@ namespace AvatarChat.Network.Handlers
                     break;
                 }
             }
+        }
+
+        private void UpdatePlayerRoom(ulong clientId, NetworkGuid roomGuid)
+        {
+            for (int i = 0; i < ConnectedPlayers.Count; i++)
+            {
+                if (ConnectedPlayers[i].ClientId == clientId)
+                {
+                    var player = ConnectedPlayers[i];
+                    player.CurrentRoomId = roomGuid;
+                    ConnectedPlayers[i] = player;
+                    break;
+                }
+            }
+        }
+
+        public NetworkPlayer GetPlayer(ulong clientId)
+        {
+            for (int i = 0; i < ConnectedPlayers.Count; i++)
+            {
+                if (ConnectedPlayers[i].ClientId == clientId)
+                {
+                    return ConnectedPlayers[i];
+                }
+            }
+
+            return NetworkPlayer.Empty;
+
         }
     }
 }

@@ -6,8 +6,8 @@ namespace AvatarChat.Network.Models
 {
     public struct NetworkRoom : INetworkSerializable, IEquatable<NetworkRoom>
     {
-        public FixedString64Bytes RoomName;
-        public FixedString64Bytes InstanceId;
+        public FixedString128Bytes RoomName;
+        public NetworkGuid InstanceId;
         public int MaxPlayers;
         public int CurrentPlayers;
 
@@ -21,7 +21,7 @@ namespace AvatarChat.Network.Models
 
         public bool Equals(NetworkRoom other)
         {
-            return InstanceId == other.InstanceId;
+            return InstanceId.Equals(other.InstanceId);
         }
     }
 }

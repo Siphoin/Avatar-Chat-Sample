@@ -8,12 +8,13 @@ namespace AvatarChat.Network.Handlers
     {
         NetworkList<NetworkRoom> ActiveRooms { get; }
 
-        void RequestCreateRoom(FixedString64Bytes roomName, int maxPlayers);
+        void RequestCreateRoom(FixedString128Bytes roomName, int maxPlayers);
 
-        void RequestJoinRoom(FixedString64Bytes instanceId);
+        void RequestJoinRoom(NetworkGuid instanceId);
 
-        void RequestLeaveRoom(FixedString64Bytes instanceId);
+        void RequestLeaveRoom(NetworkGuid instanceId);
+        void RequestJoinOrCreateRoom(FixedString128Bytes roomName, int maxPlayers);
 
-        void RemoveRoom(FixedString64Bytes instanceId);
+        void RemoveRoom(NetworkGuid instanceId);
     }
 }

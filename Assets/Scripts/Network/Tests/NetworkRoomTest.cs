@@ -38,7 +38,7 @@ namespace AvatarChat.Network.Test
             if (Input.GetKeyDown(KeyCode.F6))
             {
                 var roomHandler = _networkHandler.GetSubHandler<NetworkRoomHandler>();
-                roomHandler?.RequestCreateRoom(_testSceneName, 10);
+                roomHandler?.RequestJoinOrCreateRoom(_testSceneName, 10);
             }
 
             if (Input.GetKeyDown(KeyCode.F7))
