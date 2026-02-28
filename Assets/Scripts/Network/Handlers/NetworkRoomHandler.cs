@@ -22,22 +22,23 @@ namespace AvatarChat.Network.Handlers
         private Dictionary<NetworkGuid, Scene> _serverRoomScenes = new();
         private Dictionary<NetworkGuid, Scene> _clientRoomScenes = new();
 
+        // Новое: быстрые lookup'ы и lock для атомарного создания/нахождения комнаты
+        private readonly object _roomLock = new();
+        private readonly Dictionary<string, NetworkGuid> _baseNameToInstance = new(); // key = baseName (без суффикса)
+        private readonly Dictionary<string, NetworkGuid> _fullNameToInstance = new(); // key = полный name (с суффиксом)
+
         private void Awake() => ActiveRooms = new();
 
         public override void OnNetworkSpawn()
         {
             if (IsServer)
-            {
                 NetworkManager.Singleton.OnClientDisconnectCallback += OnServerClientDisconnect;
-            }
         }
 
         public override void OnNetworkDespawn()
         {
             if (IsServer && NetworkManager.Singleton != null)
-            {
                 NetworkManager.Singleton.OnClientDisconnectCallback -= OnServerClientDisconnect;
-            }
         }
 
         private void OnServerClientDisconnect(ulong clientId)
@@ -49,6 +50,8 @@ namespace AvatarChat.Network.Handlers
             }
         }
 
+        private bool HasSuffix(string roomName) => roomName.Contains("_");
+
         public void RequestJoinOrCreateRoom(FixedString128Bytes roomName, int maxPlayers)
         {
             JoinOrCreateRoomServerRpc(roomName, maxPlayers);
@@ -58,21 +61,82 @@ namespace AvatarChat.Network.Handlers
         private void JoinOrCreateRoomServerRpc(FixedString128Bytes roomName, int maxPlayers, RpcParams rpcParams = default)
         {
             var senderId = rpcParams.Receive.SenderClientId;
+            string name = roomName.ToString();
+            bool hasSuffix = HasSuffix(name);
 
-            for (int i = 0; i < ActiveRooms.Count; i++)
+            // Будем вычислять индекс комнаты, в которую нужно зайти (либо существующая, либо новая)
+            int targetRoomIndex = -1;
+            NetworkGuid targetInstance = default;
+
+            string baseName = name.Split('_')[0];
+
+            lock (_roomLock)
             {
-                if (ActiveRooms[i].RoomName == roomName)
+                // 1) Попробовать найти существующую комнату через быстрый lookup
+                if (!hasSuffix)
                 {
-                    JoinRoomInternal(i, senderId);
-                    return;
+                    if (_baseNameToInstance.TryGetValue(baseName, out NetworkGuid existingId))
+                    {
+                        targetInstance = existingId;
+                        targetRoomIndex = GetRoomIndexByInstanceId(existingId);
+                    }
                 }
-            }
+                else
+                {
+                    if (_fullNameToInstance.TryGetValue(name, out NetworkGuid existingId))
+                    {
+                        targetInstance = existingId;
+                        targetRoomIndex = GetRoomIndexByInstanceId(existingId);
+                    }
+                }
 
-            CreateRoomInternal(roomName, maxPlayers, senderId);
+                // 2) Если не найдено — создать новую запись и добавить в ActiveRooms и lookup
+                if (targetRoomIndex == -1)
+                {
+                    NetworkGuid newInstance = Guid.NewGuid();
+                    var newRoom = new NetworkRoom
+                    {
+                        RoomName = roomName,
+                        InstanceId = newInstance,
+                        MaxPlayers = maxPlayers,
+                        CurrentPlayers = 0,
+                        SceneLoaded = false
+                    };
+
+                    ActiveRooms.Add(newRoom);
+
+                    // Обновляем соответствующий lookup
+                    if (!hasSuffix)
+                        _baseNameToInstance[baseName] = newInstance;
+                    else
+                        _fullNameToInstance[name] = newInstance;
+
+                    targetInstance = newInstance;
+                    targetRoomIndex = ActiveRooms.Count - 1;
+                }
+            } // lock released
+
+            // Запускаем вход в комнату (может асинхронно ждать загрузку сцены)
+            if (targetRoomIndex >= 0)
+            {
+                JoinRoomInternal(targetRoomIndex, senderId).Forget();
+            }
         }
 
+        // Утилита: находит индекс комнаты в ActiveRooms по instanceId
+        private int GetRoomIndexByInstanceId(NetworkGuid instanceId)
+        {
+            for (int i = 0; i < ActiveRooms.Count; i++)
+            {
+                if (ActiveRooms[i].InstanceId.Equals(instanceId)) return i;
+            }
+            return -1;
+        }
+
+        // Если где-то ещё вызывается CreateRoomInternal напрямую — оставляем, но теперь JoinOrCreate делает всё атомарно
         private void CreateRoomInternal(FixedString128Bytes roomName, int maxPlayers, ulong clientId)
         {
+            // Вроде не используется внешне при атомарной логике, но на всякий случай реализуем тоже корректно
             NetworkGuid instanceId = Guid.NewGuid();
             ActiveRooms.Add(new NetworkRoom
             {
@@ -82,18 +146,14 @@ namespace AvatarChat.Network.Handlers
                 CurrentPlayers = 0,
                 SceneLoaded = false
             });
-
-            JoinRoomInternal(ActiveRooms.Count - 1, clientId);
+            JoinRoomInternal(ActiveRooms.Count - 1, clientId).Forget();
         }
 
-        private void JoinRoomInternal(int roomIndex, ulong clientId)
+        private async UniTask JoinRoomInternal(int roomIndex, ulong clientId)
         {
             var room = ActiveRooms[roomIndex];
 
-            if (room.CurrentPlayers >= room.MaxPlayers)
-            {
-                return;
-            }
+            if (room.CurrentPlayers >= room.MaxPlayers) return;
 
             room.CurrentPlayers++;
             ActiveRooms[roomIndex] = room;
@@ -102,35 +162,59 @@ namespace AvatarChat.Network.Handlers
             var spawnHandler = _networkHandler.GetSubHandler<NetworkSpawnHandler>();
             spawnHandler?.TrackPlayerRoom(clientId, room.InstanceId);
 
+            // Загружаем сцену на сервере, если ещё не загружена
             if (!room.SceneLoaded)
             {
-                LoadSceneOnServerAsync(room.RoomName.ToString(), room.InstanceId).Forget();
                 room.SceneLoaded = true;
                 ActiveRooms[roomIndex] = room;
+                await LoadSceneOnServerAsync(room.RoomName.ToString(), room.InstanceId);
+            }
+            else if (IsServer)
+            {
+                while (!_serverRoomScenes.ContainsKey(room.InstanceId))
+                    await UniTask.Yield();
             }
 
-            LoadSceneForClientClientRpc(room.RoomName, room.InstanceId, RpcTarget.Single(clientId, RpcTargetUse.Temp));
+            // Перемещаем игрока в комнату
+            if (IsServer)
+                MovePlayerToRoomScene(clientId, room.InstanceId);
 
+            // Загружаем сцену на клиенте
+            LoadSceneForClientClientRpc(room.RoomName, room.InstanceId, RpcTarget.Single(clientId, RpcTargetUse.Temp));
             _signalBus.Fire(new PlayerJoinedRoomSignal(clientId, room.InstanceId.ToString()));
         }
 
-        private async UniTask LoadSceneOnServerAsync(string sceneName, NetworkGuid roomId)
+        private async UniTask LoadSceneOnServerAsync(string fullRoomName, NetworkGuid roomId)
         {
-            var parameters = new LoadSceneParameters(LoadSceneMode.Additive, LocalPhysicsMode.Physics3D);
-            var asyncOp = SceneManager.LoadSceneAsync(sceneName, parameters);
+            string sceneToLoad = fullRoomName.Split('_')[0];
+            var parameters = new LoadSceneParameters(
+                LoadSceneMode.Additive,
+                LocalPhysicsMode.Physics3D);
+
+            var asyncOp = SceneManager.LoadSceneAsync(sceneToLoad, parameters);
             await asyncOp;
 
             Scene loadedScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
             _serverRoomScenes[roomId] = loadedScene;
         }
 
-        [Rpc(SendTo.SpecifiedInParams)]
-        private void LoadSceneForClientClientRpc(FixedString128Bytes sceneName, NetworkGuid roomId, RpcParams delivery)
+        private void MovePlayerToRoomScene(ulong clientId, NetworkGuid roomId)
         {
-            ExecuteClientSceneLoad(sceneName.ToString(), roomId).Forget();
+            if (_serverRoomScenes.TryGetValue(roomId, out Scene roomScene))
+            {
+                var playerObj = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
+                if (playerObj != null)
+                    SceneManager.MoveGameObjectToScene(playerObj.gameObject, roomScene);
+            }
         }
 
-        private async UniTaskVoid ExecuteClientSceneLoad(string sceneName, NetworkGuid roomId)
+        [Rpc(SendTo.SpecifiedInParams)]
+        private void LoadSceneForClientClientRpc(FixedString128Bytes roomName, NetworkGuid roomId, RpcParams delivery)
+        {
+            ExecuteClientSceneLoad(roomName.ToString(), roomId).Forget();
+        }
+
+        private async UniTaskVoid ExecuteClientSceneLoad(string roomName, NetworkGuid roomId)
         {
             if (_clientRoomScenes.ContainsKey(roomId))
             {
@@ -138,9 +222,9 @@ namespace AvatarChat.Network.Handlers
                 return;
             }
 
-            var parameters = new LoadSceneParameters(LoadSceneMode.Additive, LocalPhysicsMode.Physics3D);
-            var asyncOp = SceneManager.LoadSceneAsync(sceneName, parameters);
-
+            string sceneToLoad = roomName.Split('_')[0];
+            var parameters = new LoadSceneParameters(LoadSceneMode.Additive);
+            var asyncOp = SceneManager.LoadSceneAsync(sceneToLoad, parameters);
             await asyncOp;
 
             Scene loadedScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
@@ -150,9 +234,7 @@ namespace AvatarChat.Network.Handlers
         }
 
         [Rpc(SendTo.Server)]
-        private void NotifySceneLoadedServerRpc(NetworkGuid roomId, RpcParams rpcParams = default)
-        {
-        }
+        private void NotifySceneLoadedServerRpc(NetworkGuid roomId, RpcParams rpcParams = default) { }
 
         private void HandlePlayerExit(NetworkGuid instanceId, ulong clientId)
         {
@@ -190,23 +272,16 @@ namespace AvatarChat.Network.Handlers
         private void ConfirmActionClientRpc(NetworkGuid instanceId, bool isJoin, RpcParams delivery)
         {
             if (isJoin)
-            {
                 _signalBus.Fire(new PlayerJoinedRoomSignal(NetworkManager.Singleton.LocalClientId, instanceId.ToString()));
-            }
             else
-            {
                 LeaveRoomLocalCleanup(instanceId);
-            }
         }
 
         private void LeaveRoomLocalCleanup(NetworkGuid instanceId)
         {
             if (_clientRoomScenes.TryGetValue(instanceId, out Scene scene))
             {
-                if (scene.isLoaded)
-                {
-                    SceneManager.UnloadSceneAsync(scene);
-                }
+                if (scene.isLoaded) SceneManager.UnloadSceneAsync(scene);
                 _clientRoomScenes.Remove(instanceId);
             }
 
@@ -228,7 +303,7 @@ namespace AvatarChat.Network.Handlers
             {
                 if (ActiveRooms[i].InstanceId.Equals(instanceId))
                 {
-                    JoinRoomInternal(i, rpcParams.Receive.SenderClientId);
+                    JoinRoomInternal(i, rpcParams.Receive.SenderClientId).Forget();
                     break;
                 }
             }
@@ -238,19 +313,30 @@ namespace AvatarChat.Network.Handlers
         {
             if (!IsServer) return;
 
+            // Удаляем сцену и записи lookup'ов
             if (_serverRoomScenes.TryGetValue(instanceId, out Scene scene))
             {
-                if (scene.isLoaded)
-                {
-                    SceneManager.UnloadSceneAsync(scene);
-                }
+                if (scene.isLoaded) SceneManager.UnloadSceneAsync(scene);
                 _serverRoomScenes.Remove(instanceId);
             }
 
+            // Удаляем из ActiveRooms и lookup
             for (int i = 0; i < ActiveRooms.Count; i++)
             {
                 if (ActiveRooms[i].InstanceId.Equals(instanceId))
                 {
+                    string rn = ActiveRooms[i].RoomName.ToString();
+                    if (HasSuffix(rn))
+                    {
+                        // полный ключ
+                        _fullNameToInstance.Remove(rn);
+                    }
+                    else
+                    {
+                        string baseName = rn.Split('_')[0];
+                        _baseNameToInstance.Remove(baseName);
+                    }
+
                     ActiveRooms.RemoveAt(i);
                     break;
                 }
@@ -261,8 +347,7 @@ namespace AvatarChat.Network.Handlers
         {
             for (int i = 0; i < ActiveRooms.Count; i++)
             {
-                if (ActiveRooms[i].InstanceId.Equals(value))
-                    return ActiveRooms[i];
+                if (ActiveRooms[i].InstanceId.Equals(value)) return ActiveRooms[i];
             }
             return NetworkRoom.Empty;
         }
@@ -276,12 +361,8 @@ namespace AvatarChat.Network.Handlers
 
         public Scene GetRoomScene(NetworkGuid instanceId)
         {
-            if (IsServer && _serverRoomScenes.TryGetValue(instanceId, out Scene serverScene))
-                return serverScene;
-
-            if (!IsServer && _clientRoomScenes.TryGetValue(instanceId, out Scene clientScene))
-                return clientScene;
-
+            if (IsServer && _serverRoomScenes.TryGetValue(instanceId, out Scene serverScene)) return serverScene;
+            if (!IsServer && _clientRoomScenes.TryGetValue(instanceId, out Scene clientScene)) return clientScene;
             return default;
         }
     }

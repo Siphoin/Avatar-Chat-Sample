@@ -58,25 +58,6 @@ namespace AvatarChat.Network.Handlers
             return instance;
         }
 
-        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-        private void SpawnObjectServerRpc(uint prefabHash, Vector3 position, Quaternion rotation, RpcParams rpcParams = default)
-        {
-            var senderId = rpcParams.Receive.SenderClientId;
-
-            var prefabsList = NetworkManager.Singleton.NetworkConfig.Prefabs.Prefabs;
-
-            foreach (var networkPrefab in prefabsList)
-            {
-                if (networkPrefab.Prefab.GetComponent<Unity.Netcode.NetworkObject>().PrefabIdHash == prefabHash)
-                {
-                    SpawnObject(networkPrefab.Prefab, senderId, position, rotation);
-                    return;
-                }
-            }
-
-            Debug.LogWarning($"Prefab with hash {prefabHash} not found in NetworkManager prefabs list.");
-        }
-
         public GameObject SpawnObject(GameObject prefab, ulong targetClientId, Vector3 position = default, Quaternion rotation = default)
         {
             if (!IsServer) return null;
