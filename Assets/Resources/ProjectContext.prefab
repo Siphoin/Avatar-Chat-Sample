@@ -92,6 +92,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _elements:
   - {fileID: 11400000, guid: c13ba62ffb530b64b8e1afee0fd33a53, type: 2}
+  - {fileID: 11400000, guid: 46e52fa78fdf3f44f9f74532ee26fac2, type: 2}
 --- !u!1 &3697174687833511848
 GameObject:
   m_ObjectHideFlags: 0
@@ -317,7 +318,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _testSceneName: GameScene
-  _maxPlayers: 10
 --- !u!1 &6019035752313781143
 GameObject:
   m_ObjectHideFlags: 0

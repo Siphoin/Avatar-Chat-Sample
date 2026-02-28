@@ -11,6 +11,16 @@ namespace AvatarChat.Network.Models
         public int MaxPlayers;
         public int CurrentPlayers;
 
+        public static NetworkRoom Empty => new NetworkRoom
+        {
+            RoomName = default,
+            InstanceId = default,
+            MaxPlayers = 0,
+            CurrentPlayers = 0
+        };
+
+        public bool IsEmpty => Equals(Empty);
+
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
             serializer.SerializeValue(ref RoomName);

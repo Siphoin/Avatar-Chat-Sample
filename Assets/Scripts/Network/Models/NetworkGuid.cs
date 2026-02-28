@@ -10,6 +10,8 @@ namespace AvatarChat.Network.Models
         private ulong _first;
         private ulong _second;
 
+        public static NetworkGuid Empty => new NetworkGuid(Guid.Empty);
+
         public NetworkGuid(Guid guid)
         {
             byte[] bytes = guid.ToByteArray();
