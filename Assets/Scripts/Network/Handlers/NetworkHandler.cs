@@ -122,9 +122,17 @@ namespace AvatarChat.Network.Handlers
 
         private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
         {
+            if (request.Payload.Length > 0)
+            {
+                string playerName = System.Text.Encoding.UTF8.GetString(request.Payload);
+                _signalBus.Fire(new ConnectionApprovedSignal(request.ClientNetworkId, playerName));
+            }
+
             response.Approved = true;
             response.CreatePlayerObject = true;
             response.Pending = false;
         }
+
+
     }
 }
