@@ -1,8 +1,10 @@
 ﻿using AvatarChat.Network.Handlers;
 using AvatarChat.Network.Models;
 using Cysharp.Threading.Tasks;
+using System;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Zenject;
 
 namespace AvatarChat.Network.Components
@@ -39,42 +41,88 @@ namespace AvatarChat.Network.Components
 
                 CheckObjectVisibility();
             }
+            else
+            {
+                _roomGuid.OnValueChanged += OnRoomChanged;
+                MoveToRoomScene(_roomGuid.Value);
+            }
 
             InitializePlayerAsync().Forget();
         }
 
         public override void OnNetworkDespawn()
         {
+            _roomGuid.OnValueChanged -= OnRoomChanged;
+
             if (IsServer && NetworkManager.Singleton != null)
             {
                 NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
-                _roomGuid.OnValueChanged -= OnRoomChanged;
             }
         }
 
-        private void OnRoomChanged(NetworkGuid prev, NetworkGuid next) => CheckObjectVisibility();
-        private void OnClientConnected(ulong id) => CheckObjectVisibility();
+        private void OnRoomChanged(NetworkGuid prev, NetworkGuid next)
+        {
+            CheckObjectVisibility();
+            MoveToRoomScene(next);
+        }
+
+        private void OnClientConnected(ulong id)
+        {
+            CheckObjectVisibility();
+        }
 
         public void CheckObjectVisibility()
         {
-            if (!IsServer) return;
+            if (!IsServer || !IsSpawned || NetworkManager.Singleton == null || !NetworkManager.Singleton.IsServer)
+                return;
 
             var spawnHandler = _handler.GetSubHandler<NetworkSpawnHandler>();
             var playersInMyRoom = spawnHandler.GetPlayersInRoom(_roomGuid.Value);
 
             foreach (var clientId in NetworkManager.Singleton.ConnectedClientsIds)
             {
-                if (playersInMyRoom.Contains(clientId))
-                    _networkObject.NetworkShow(clientId);
-                else
-                    _networkObject.NetworkHide(clientId);
+                if (!NetworkManager.Singleton.ConnectedClients.ContainsKey(clientId))
+                    continue;
+
+                bool shouldShow = playersInMyRoom.Contains(clientId);
+                bool currentlyVisible = false;
+
+                try
+                {
+                    currentlyVisible = _networkObject.IsNetworkVisibleTo(clientId);
+                }
+                catch { }
+
+                try
+                {
+                    if (shouldShow && !currentlyVisible)
+                    {
+                        _networkObject.NetworkShow(clientId);
+                    }
+                    else if (!shouldShow && currentlyVisible)
+                    {
+                        _networkObject.NetworkHide(clientId);
+                    }
+                }
+                catch { }
             }
         }
 
         private async UniTaskVoid InitializePlayerAsync()
         {
+            var roomHandler = _handler.GetSubHandler<NetworkRoomHandler>();
+
             await UniTask.WaitUntil(() => !Owner.IsEmpty && !Room.IsEmpty,
                 cancellationToken: this.GetCancellationTokenOnDestroy());
+
+            Scene targetScene = default;
+            await UniTask.WaitUntil(() =>
+            {
+                targetScene = roomHandler.GetRoomScene(_roomGuid.Value);
+                return targetScene.IsValid() && targetScene.isLoaded;
+            }, cancellationToken: this.GetCancellationTokenOnDestroy());
+
+            MoveToRoomScene(_roomGuid.Value);
             OnPlayerReady();
         }
 
@@ -82,7 +130,24 @@ namespace AvatarChat.Network.Components
 
         internal void SetRoom(NetworkRoom room)
         {
-            if (IsServer && !room.IsEmpty) _roomGuid.Value = room.InstanceId;
+            if (IsServer && !room.IsEmpty)
+            {
+                _roomGuid.Value = room.InstanceId;
+                MoveToRoomScene(room.InstanceId);
+            }
+        }
+
+        private void MoveToRoomScene(NetworkGuid roomId)
+        {
+            if (roomId.Equals(new NetworkGuid())) return;
+
+            var roomHandler = _handler.GetSubHandler<NetworkRoomHandler>();
+            Scene targetScene = roomHandler.GetRoomScene(roomId);
+
+            if (targetScene.IsValid() && targetScene.isLoaded)
+            {
+                SceneManager.MoveGameObjectToScene(gameObject, targetScene);
+            }
         }
 
         public void GiveOwnership(ulong clientId) { if (IsServer) _networkObject.ChangeOwnership(clientId); }

@@ -10,6 +10,7 @@ namespace AvatarChat.Network.Models
         public NetworkGuid InstanceId;
         public int MaxPlayers;
         public int CurrentPlayers;
+        internal bool SceneLoaded;
 
         public static NetworkRoom Empty => new NetworkRoom
         {
@@ -27,6 +28,7 @@ namespace AvatarChat.Network.Models
             serializer.SerializeValue(ref InstanceId);
             serializer.SerializeValue(ref MaxPlayers);
             serializer.SerializeValue(ref CurrentPlayers);
+            serializer.SerializeValue(ref SceneLoaded);
         }
 
         public bool Equals(NetworkRoom other)
