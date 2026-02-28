@@ -74,7 +74,7 @@ MonoBehaviour:
     NetworkProfilingMetrics: 1
     OldPrefabList: []
   RunInBackground: 1
-  LogLevel: 1
+  LogLevel: 0
 --- !u!114 &6769669041524464106
 MonoBehaviour:
   m_ObjectHideFlags: 0

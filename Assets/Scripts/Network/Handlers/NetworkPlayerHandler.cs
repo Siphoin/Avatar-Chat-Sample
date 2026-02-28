@@ -7,6 +7,8 @@ using UniRx;
 using Unity.Collections;
 using Unity.Netcode;
 using Zenject;
+using Sirenix.OdinInspector;
+using ReadOnlyAttribute = Sirenix.OdinInspector.ReadOnlyAttribute;
 
 namespace AvatarChat.Network.Handlers
 {
@@ -14,10 +16,11 @@ namespace AvatarChat.Network.Handlers
     {
         [Inject] private SignalBus _signalBus;
 
+        [ShowInInspector, ReadOnly]
         public NetworkList<NetworkPlayer> ConnectedPlayers { get; private set; }
         private readonly Dictionary<ulong, string> _pendingNames = new();
 
-        private void Awake() => ConnectedPlayers = new();
+        private void Awake() => ConnectedPlayers = new NetworkList<NetworkPlayer>();
 
         public override void OnNetworkSpawn()
         {
@@ -49,7 +52,7 @@ namespace AvatarChat.Network.Handlers
             {
                 Name = playerName ?? $"Player {clientId}",
                 ClientId = clientId,
-                InstanceId = Guid.NewGuid().ToString()
+                InstanceId = Guid.NewGuid()
             });
 
             _pendingNames.Remove(clientId);
@@ -59,7 +62,7 @@ namespace AvatarChat.Network.Handlers
         {
             for (int i = 0; i < ConnectedPlayers.Count; i++)
             {
-                if (_pendingNames.ContainsKey(clientId))
+                if (ConnectedPlayers[i].ClientId == clientId)
                 {
                     ConnectedPlayers.RemoveAt(i);
                     break;
@@ -69,13 +72,17 @@ namespace AvatarChat.Network.Handlers
         }
 
         [Rpc(SendTo.Server)]
-        public void UpdatePlayerInstanceRpc(ulong clientId, FixedString64Bytes instanceId)
+        public void UpdatePlayerInstanceRpc(ulong clientId, NetworkGuid instanceId)
         {
             for (int i = 0; i < ConnectedPlayers.Count; i++)
             {
-                var player = ConnectedPlayers[i];
-                player.InstanceId = instanceId;
-                ConnectedPlayers[i] = player;
+                if (ConnectedPlayers[i].ClientId == clientId)
+                {
+                    var player = ConnectedPlayers[i];
+                    player.InstanceId = instanceId;
+                    ConnectedPlayers[i] = player;
+                    break;
+                }
             }
         }
     }

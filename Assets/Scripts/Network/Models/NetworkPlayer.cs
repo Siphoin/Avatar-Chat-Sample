@@ -8,7 +8,7 @@ namespace AvatarChat.Network.Models
     {
         public ulong ClientId;
         public FixedString64Bytes Name;
-        public FixedString64Bytes InstanceId;
+        public NetworkGuid InstanceId;
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
@@ -19,7 +19,7 @@ namespace AvatarChat.Network.Models
 
         public bool Equals(NetworkPlayer other)
         {
-            return InstanceId == other.InstanceId;
+            return InstanceId.Equals(other.InstanceId);
         }
     }
 }
