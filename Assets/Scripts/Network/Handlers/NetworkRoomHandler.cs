@@ -16,7 +16,21 @@ namespace AvatarChat.Network.Handlers
 
         public NetworkList<NetworkRoom> ActiveRooms { get; private set; }
 
+        private string _expectedSceneName;
+
         private void Awake() => ActiveRooms = new();
+
+        public override void OnNetworkSpawn()
+        {
+            NetworkManager.Singleton.SceneManager.VerifySceneBeforeLoading = VerifyScene;
+        }
+
+        private bool VerifyScene(int sceneIndex, string sceneName, LoadSceneMode loadMode)
+        {
+            if (IsServer) return true;
+
+            return sceneName == _expectedSceneName;
+        }
 
         public void RequestCreateRoom(FixedString64Bytes roomName, int maxPlayers) => CreateRoomServerRpc(roomName, maxPlayers);
         public void RequestJoinRoom(FixedString64Bytes instanceId) => JoinRoomServerRpc(instanceId);
@@ -47,17 +61,48 @@ namespace AvatarChat.Network.Handlers
         private void CreateRoomServerRpc(FixedString64Bytes roomName, int maxPlayers, RpcParams rpcParams = default)
         {
             var instanceId = Guid.NewGuid().ToString();
-            ActiveRooms.Add(new NetworkRoom { RoomName = roomName, InstanceId = instanceId, MaxPlayers = maxPlayers, CurrentPlayers = 1 });
+            var senderId = rpcParams.Receive.SenderClientId;
+
+            ActiveRooms.Add(new NetworkRoom
+            {
+                RoomName = roomName,
+                InstanceId = instanceId,
+                MaxPlayers = maxPlayers,
+                CurrentPlayers = 1
+            });
+            PrepareClientForSceneLoadClientRpc(roomName, RpcTarget.Single(senderId, RpcTargetUse.Temp));
 
             NetworkManager.Singleton.SceneManager.LoadScene(roomName.ToString(), LoadSceneMode.Additive);
 
-            ConfirmActionClientRpc(instanceId, roomName, true, RpcTarget.Single(rpcParams.Receive.SenderClientId, RpcTargetUse.Temp));
+            ConfirmActionClientRpc(instanceId, roomName, true, RpcTarget.Single(senderId, RpcTargetUse.Temp));
         }
 
         [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
         private void JoinRoomServerRpc(FixedString64Bytes instanceId, RpcParams rpcParams = default)
         {
-            ConfirmActionClientRpc(instanceId, "", true, RpcTarget.Single(rpcParams.Receive.SenderClientId, RpcTargetUse.Temp));
+            var senderId = rpcParams.Receive.SenderClientId;
+
+            for (int i = 0; i < ActiveRooms.Count; i++)
+            {
+                if (ActiveRooms[i].InstanceId == instanceId)
+                {
+                    var room = ActiveRooms[i];
+                    room.CurrentPlayers++;
+                    ActiveRooms[i] = room;
+
+                    PrepareClientForSceneLoadClientRpc(room.RoomName, RpcTarget.Single(senderId, RpcTargetUse.Temp));
+                    NetworkManager.Singleton.SceneManager.LoadScene(room.RoomName.ToString(), LoadSceneMode.Additive);
+
+                    ConfirmActionClientRpc(instanceId, room.RoomName, true, RpcTarget.Single(senderId, RpcTargetUse.Temp));
+                    break;
+                }
+            }
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        private void PrepareClientForSceneLoadClientRpc(FixedString64Bytes sceneName, RpcParams delivery)
+        {
+            _expectedSceneName = sceneName.ToString();
         }
 
         [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
@@ -70,9 +115,23 @@ namespace AvatarChat.Network.Handlers
         private void ConfirmActionClientRpc(FixedString64Bytes instanceId, FixedString64Bytes sceneName, bool isJoin, RpcParams delivery)
         {
             if (isJoin)
+            {
                 _signalBus.Fire(new PlayerJoinedRoomSignal(NetworkManager.Singleton.LocalClientId, instanceId.ToString()));
+            }
             else
+            {
+                if (!string.IsNullOrEmpty(_expectedSceneName))
+                {
+                    var scene = SceneManager.GetSceneByName(_expectedSceneName);
+                    if (scene.isLoaded)
+                    {
+                        SceneManager.UnloadSceneAsync(scene);
+                    }
+                }
+
+                _expectedSceneName = null;
                 _signalBus.Fire(new PlayerLeftRoomSignal(NetworkManager.Singleton.LocalClientId, instanceId.ToString()));
+            }
         }
     }
 }
