@@ -22,10 +22,9 @@ namespace AvatarChat.Network.Handlers
         private Dictionary<NetworkGuid, Scene> _serverRoomScenes = new();
         private Dictionary<NetworkGuid, Scene> _clientRoomScenes = new();
 
-        // Новое: быстрые lookup'ы и lock для атомарного создания/нахождения комнаты
         private readonly object _roomLock = new();
-        private readonly Dictionary<string, NetworkGuid> _baseNameToInstance = new(); // key = baseName (без суффикса)
-        private readonly Dictionary<string, NetworkGuid> _fullNameToInstance = new(); // key = полный name (с суффиксом)
+        private readonly Dictionary<string, NetworkGuid> _baseNameToInstance = new();
+        private readonly Dictionary<string, NetworkGuid> _fullNameToInstance = new();
 
         private void Awake() => ActiveRooms = new();
 
@@ -64,7 +63,6 @@ namespace AvatarChat.Network.Handlers
             string name = roomName.ToString();
             bool hasSuffix = HasSuffix(name);
 
-            // Будем вычислять индекс комнаты, в которую нужно зайти (либо существующая, либо новая)
             int targetRoomIndex = -1;
             NetworkGuid targetInstance = default;
 
@@ -72,7 +70,6 @@ namespace AvatarChat.Network.Handlers
 
             lock (_roomLock)
             {
-                // 1) Попробовать найти существующую комнату через быстрый lookup
                 if (!hasSuffix)
                 {
                     if (_baseNameToInstance.TryGetValue(baseName, out NetworkGuid existingId))
@@ -90,7 +87,6 @@ namespace AvatarChat.Network.Handlers
                     }
                 }
 
-                // 2) Если не найдено — создать новую запись и добавить в ActiveRooms и lookup
                 if (targetRoomIndex == -1)
                 {
                     NetworkGuid newInstance = Guid.NewGuid();
@@ -105,7 +101,6 @@ namespace AvatarChat.Network.Handlers
 
                     ActiveRooms.Add(newRoom);
 
-                    // Обновляем соответствующий lookup
                     if (!hasSuffix)
                         _baseNameToInstance[baseName] = newInstance;
                     else
@@ -114,16 +109,14 @@ namespace AvatarChat.Network.Handlers
                     targetInstance = newInstance;
                     targetRoomIndex = ActiveRooms.Count - 1;
                 }
-            } // lock released
+            }
 
-            // Запускаем вход в комнату (может асинхронно ждать загрузку сцены)
             if (targetRoomIndex >= 0)
             {
                 JoinRoomInternal(targetRoomIndex, senderId).Forget();
             }
         }
 
-        // Утилита: находит индекс комнаты в ActiveRooms по instanceId
         private int GetRoomIndexByInstanceId(NetworkGuid instanceId)
         {
             for (int i = 0; i < ActiveRooms.Count; i++)
@@ -133,10 +126,8 @@ namespace AvatarChat.Network.Handlers
             return -1;
         }
 
-        // Если где-то ещё вызывается CreateRoomInternal напрямую — оставляем, но теперь JoinOrCreate делает всё атомарно
         private void CreateRoomInternal(FixedString128Bytes roomName, int maxPlayers, ulong clientId)
         {
-            // Вроде не используется внешне при атомарной логике, но на всякий случай реализуем тоже корректно
             NetworkGuid instanceId = Guid.NewGuid();
             ActiveRooms.Add(new NetworkRoom
             {
@@ -162,7 +153,6 @@ namespace AvatarChat.Network.Handlers
             var spawnHandler = _networkHandler.GetSubHandler<NetworkSpawnHandler>();
             spawnHandler?.TrackPlayerRoom(clientId, room.InstanceId);
 
-            // Загружаем сцену на сервере, если ещё не загружена
             if (!room.SceneLoaded)
             {
                 room.SceneLoaded = true;
@@ -175,11 +165,9 @@ namespace AvatarChat.Network.Handlers
                     await UniTask.Yield();
             }
 
-            // Перемещаем игрока в комнату
             if (IsServer)
                 MovePlayerToRoomScene(clientId, room.InstanceId);
 
-            // Загружаем сцену на клиенте
             LoadSceneForClientClientRpc(room.RoomName, room.InstanceId, RpcTarget.Single(clientId, RpcTargetUse.Temp));
             _signalBus.Fire(new PlayerJoinedRoomSignal(clientId, room.InstanceId.ToString()));
         }
@@ -189,7 +177,7 @@ namespace AvatarChat.Network.Handlers
             string sceneToLoad = fullRoomName.Split('_')[0];
             var parameters = new LoadSceneParameters(
                 LoadSceneMode.Additive,
-                LocalPhysicsMode.Physics3D);
+                LocalPhysicsMode.Physics2D);
 
             var asyncOp = SceneManager.LoadSceneAsync(sceneToLoad, parameters);
             await asyncOp;
@@ -223,7 +211,7 @@ namespace AvatarChat.Network.Handlers
             }
 
             string sceneToLoad = roomName.Split('_')[0];
-            var parameters = new LoadSceneParameters(LoadSceneMode.Additive);
+            var parameters = new LoadSceneParameters(LoadSceneMode.Additive, LocalPhysicsMode.Physics2D);
             var asyncOp = SceneManager.LoadSceneAsync(sceneToLoad, parameters);
             await asyncOp;
 
@@ -232,6 +220,7 @@ namespace AvatarChat.Network.Handlers
 
             NotifySceneLoadedServerRpc(roomId);
         }
+
 
         [Rpc(SendTo.Server)]
         private void NotifySceneLoadedServerRpc(NetworkGuid roomId, RpcParams rpcParams = default) { }
@@ -313,14 +302,12 @@ namespace AvatarChat.Network.Handlers
         {
             if (!IsServer) return;
 
-            // Удаляем сцену и записи lookup'ов
             if (_serverRoomScenes.TryGetValue(instanceId, out Scene scene))
             {
                 if (scene.isLoaded) SceneManager.UnloadSceneAsync(scene);
                 _serverRoomScenes.Remove(instanceId);
             }
 
-            // Удаляем из ActiveRooms и lookup
             for (int i = 0; i < ActiveRooms.Count; i++)
             {
                 if (ActiveRooms[i].InstanceId.Equals(instanceId))
@@ -328,7 +315,6 @@ namespace AvatarChat.Network.Handlers
                     string rn = ActiveRooms[i].RoomName.ToString();
                     if (HasSuffix(rn))
                     {
-                        // полный ключ
                         _fullNameToInstance.Remove(rn);
                     }
                     else

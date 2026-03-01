@@ -10,14 +10,13 @@ namespace AvatarChat.Core.Components
     public class CharacterMovement : NetworkBehaviour
     {
         [SerializeField] private float _speed = 5f;
-       [SerializeField, ReadOnly] private Rigidbody2D _rigidbody;
+        [SerializeField, ReadOnly] private Rigidbody2D _rigidbody;
 
         private Vector2 _clientPredictedTarget;
         private readonly NetworkVariable<Vector2> _serverTargetPosition = new(
             readPerm: NetworkVariableReadPermission.Everyone,
             writePerm: NetworkVariableWritePermission.Server
         );
-
 
         public override void OnNetworkSpawn()
         {
@@ -27,6 +26,7 @@ namespace AvatarChat.Core.Components
                 _rigidbody.bodyType = RigidbodyType2D.Dynamic;
                 _rigidbody.gravityScale = 0;
                 _rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
+                _rigidbody.sleepMode = RigidbodySleepMode2D.NeverSleep;
             }
             else
             {
@@ -84,6 +84,7 @@ namespace AvatarChat.Core.Components
             Vector2 currentPos = _rigidbody.position;
             if (currentPos != _serverTargetPosition.Value)
             {
+                _rigidbody.WakeUp();
                 Vector2 nextPos = Vector2.MoveTowards(
                     currentPos,
                     _serverTargetPosition.Value,
@@ -92,8 +93,6 @@ namespace AvatarChat.Core.Components
                 _rigidbody.MovePosition(nextPos);
             }
         }
-
-        
 
         [ServerRpc]
         private void RequestMoveServerRpc(Vector2 target)
@@ -106,8 +105,7 @@ namespace AvatarChat.Core.Components
             if (!_rigidbody)
             {
                 _rigidbody = GetComponent<Rigidbody2D>();
-            } 
+            }
         }
-
     }
 }

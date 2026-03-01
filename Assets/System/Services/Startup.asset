@@ -12,7 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8dd189f7a5688248b257369c76a7214, type: 3}
   m_Name: Startup
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 0
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   _guidObject: ec5af3c6-1015-4e5d-a1f2-3ab0be5e3450
   _targetFPS: 60
   _isDevBuild: 1
-  _loadStartupScene: 0
+  _loadStartupScene: 1
