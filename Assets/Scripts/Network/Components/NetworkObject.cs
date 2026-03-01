@@ -1,11 +1,14 @@
 ﻿using AvatarChat.Network.Handlers;
 using AvatarChat.Network.Models;
+using AvatarChat.Network.Signals;
+using AvatarChat.Main;
 using Cysharp.Threading.Tasks;
 using System;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
+using UniRx;
 
 namespace AvatarChat.Network.Components
 {
@@ -13,9 +16,11 @@ namespace AvatarChat.Network.Components
     public abstract class NetworkObject : NetworkBehaviour
     {
         [Inject] protected INetworkHandler _handler;
+        [Inject] private SignalBus _signalBus;
 
         private NetworkVariable<NetworkGuid> _roomGuid = new(readPerm: NetworkVariableReadPermission.Everyone, writePerm: NetworkVariableWritePermission.Server);
         protected Unity.Netcode.NetworkObject _networkObject;
+        private IDisposable _roomUpdateSubscription;
 
         public NetworkPlayer Owner => _handler.GetSubHandler<NetworkPlayerHandler>().GetPlayer(OwnerClientId);
         public NetworkRoom Room => _handler.GetSubHandler<NetworkRoomHandler>().GetRoom(_roomGuid.Value);
@@ -36,9 +41,11 @@ namespace AvatarChat.Network.Components
                     spawnHandler.TrackPlayerRoom(OwnerClientId, targetRoom.InstanceId);
                 }
 
-                NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
-                _roomGuid.OnValueChanged += OnRoomChanged;
+                _roomUpdateSubscription = _signalBus.GetStream<RoomPlayersUpdatedSignal>()
+                    .Where(sig => sig.RoomId.Equals(_roomGuid.Value))
+                    .Subscribe(_ => CheckObjectVisibility());
 
+                _roomGuid.OnValueChanged += OnRoomChanged;
                 CheckObjectVisibility();
             }
             else
@@ -53,27 +60,18 @@ namespace AvatarChat.Network.Components
         public override void OnNetworkDespawn()
         {
             _roomGuid.OnValueChanged -= OnRoomChanged;
-
-            if (IsServer && NetworkManager.Singleton != null)
-            {
-                NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
-            }
+            _roomUpdateSubscription?.Dispose();
         }
 
         private void OnRoomChanged(NetworkGuid prev, NetworkGuid next)
         {
-            CheckObjectVisibility();
+            if (IsServer) CheckObjectVisibility();
             MoveToRoomScene(next);
-        }
-
-        private void OnClientConnected(ulong id)
-        {
-            CheckObjectVisibility();
         }
 
         public void CheckObjectVisibility()
         {
-            if (!IsServer || !IsSpawned || NetworkManager.Singleton == null || !NetworkManager.Singleton.IsServer)
+            if (!IsServer || !IsSpawned || NetworkManager.Singleton == null)
                 return;
 
             var spawnHandler = _handler.GetSubHandler<NetworkSpawnHandler>();
@@ -81,30 +79,17 @@ namespace AvatarChat.Network.Components
 
             foreach (var clientId in NetworkManager.Singleton.ConnectedClientsIds)
             {
-                if (!NetworkManager.Singleton.ConnectedClients.ContainsKey(clientId))
-                    continue;
-
                 bool shouldShow = playersInMyRoom.Contains(clientId);
-                bool currentlyVisible = false;
+                bool currentlyVisible = _networkObject.IsNetworkVisibleTo(clientId);
 
-                try
+                if (shouldShow && !currentlyVisible)
                 {
-                    currentlyVisible = _networkObject.IsNetworkVisibleTo(clientId);
+                    _networkObject.NetworkShow(clientId);
                 }
-                catch { }
-
-                try
+                else if (!shouldShow && currentlyVisible)
                 {
-                    if (shouldShow && !currentlyVisible)
-                    {
-                        _networkObject.NetworkShow(clientId);
-                    }
-                    else if (!shouldShow && currentlyVisible)
-                    {
-                        _networkObject.NetworkHide(clientId);
-                    }
+                    _networkObject.NetworkHide(clientId);
                 }
-                catch { }
             }
         }
 
