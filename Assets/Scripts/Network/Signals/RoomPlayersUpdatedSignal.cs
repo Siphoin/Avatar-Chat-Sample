@@ -4,7 +4,7 @@ namespace AvatarChat.Network.Signals
 {
     public class RoomPlayersUpdatedSignal
     {
-        public readonly NetworkGuid RoomId;
+        public NetworkGuid RoomId { get; private set; }
 
         public RoomPlayersUpdatedSignal(NetworkGuid roomId)
         {
