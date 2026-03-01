@@ -1,9 +1,8 @@
 using AvatarChat.Network.Components;
-using Cysharp.Threading.Tasks;
-using System.Threading.Tasks;
 using UnityEngine;
 namespace AvatarChat.Core.Components
 {
+    [RequireComponent(typeof(CharacterMovement))]
     public class Character : NetworkObject
     {
         protected override void OnPlayerReady()
