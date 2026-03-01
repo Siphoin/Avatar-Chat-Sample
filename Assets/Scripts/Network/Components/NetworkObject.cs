@@ -42,7 +42,6 @@ namespace AvatarChat.Network.Components
                 }
 
                 _roomUpdateSubscription = _signalBus.GetStream<RoomPlayersUpdatedSignal>()
-                    .Where(sig => sig.RoomId.Equals(_roomGuid.Value))
                     .Subscribe(_ => CheckObjectVisibility());
 
                 _roomGuid.OnValueChanged += OnRoomChanged;
