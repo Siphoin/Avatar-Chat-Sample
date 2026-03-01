@@ -45,7 +45,6 @@ namespace AvatarChat.Network.Handlers
             if (_playerToRoomMap.TryGetValue(clientId, out NetworkGuid instanceId))
             {
                 HandlePlayerExit(instanceId, clientId);
-                _playerToRoomMap.Remove(clientId);
             }
         }
 
@@ -121,7 +120,6 @@ namespace AvatarChat.Network.Handlers
             var room = ActiveRooms[roomIndex];
             if (room.CurrentPlayers >= room.MaxPlayers) return;
 
-            // 1. Обновляем данные игрока
             room.CurrentPlayers++;
             ActiveRooms[roomIndex] = room;
             _playerToRoomMap[clientId] = instanceId;
@@ -129,15 +127,10 @@ namespace AvatarChat.Network.Handlers
             var spawnHandler = _networkHandler.GetSubHandler<NetworkSpawnHandler>();
             spawnHandler?.TrackPlayerRoom(clientId, instanceId);
 
-            // 2. Проверяем, нужно ли грузить сцену на сервере
             if (!_serverRoomScenes.ContainsKey(instanceId))
             {
-                // Если мы уже в процессе загрузки (на случай если зашли почти одновременно)
-                // можно добавить проверку флага, но раз заходят не одновременно, 
-                // прямой проверки словаря достаточно.
                 await LoadSceneOnServerAsync(room.RoomName.ToString(), instanceId);
 
-                // Обновляем флаг в NetworkList после физической загрузки
                 roomIndex = GetRoomIndexByInstanceId(instanceId);
                 if (roomIndex != -1)
                 {
@@ -147,10 +140,8 @@ namespace AvatarChat.Network.Handlers
                 }
             }
 
-            // 3. Перемещаем игрока в сцену на сервере
             MovePlayerToRoomScene(clientId, instanceId);
 
-            // 4. Отправляем клиенту команду загрузить сцену у себя
             LoadSceneForClientClientRpc(room.RoomName, instanceId, RpcTarget.Single(clientId, RpcTargetUse.Temp));
 
             _signalBus.Fire(new PlayerJoinedRoomSignal(clientId, instanceId.ToString()));
@@ -212,20 +203,27 @@ namespace AvatarChat.Network.Handlers
 
         private void HandlePlayerExit(NetworkGuid instanceId, ulong clientId)
         {
-            int index = GetRoomIndexByInstanceId(instanceId);
-            if (index != -1)
-            {
-                var room = ActiveRooms[index];
-                room.CurrentPlayers--;
+            if (_playerToRoomMap.ContainsKey(clientId))
+                _playerToRoomMap.Remove(clientId);
 
-                if (room.CurrentPlayers <= 0)
-                {
-                    RemoveRoom(instanceId);
-                }
-                else
-                {
-                    ActiveRooms[index] = room;
-                }
+            int index = GetRoomIndexByInstanceId(instanceId);
+            if (index == -1) return;
+
+            int remaining = 0;
+            foreach (var kv in _playerToRoomMap)
+            {
+                if (kv.Value.Equals(instanceId)) remaining++;
+            }
+
+            var room = ActiveRooms[index];
+            room.CurrentPlayers = remaining;
+            if (room.CurrentPlayers <= 0)
+            {
+                RemoveRoom(instanceId);
+            }
+            else
+            {
+                ActiveRooms[index] = room;
             }
         }
 
@@ -234,7 +232,6 @@ namespace AvatarChat.Network.Handlers
         {
             var clientId = rpcParams.Receive.SenderClientId;
             HandlePlayerExit(instanceId, clientId);
-            _playerToRoomMap.Remove(clientId);
 
             ConfirmActionClientRpc(instanceId, false, RpcTarget.Single(clientId, RpcTargetUse.Temp));
         }
