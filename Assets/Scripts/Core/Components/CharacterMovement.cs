@@ -21,21 +21,34 @@ namespace AvatarChat.Core.Components
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
+
+            int characterLayer = LayerMask.NameToLayer("Character");
+            if (characterLayer != -1)
+            {
+                Physics2D.IgnoreLayerCollision(characterLayer, characterLayer, true);
+            }
+
             if (IsServer)
             {
                 _rigidbody.bodyType = RigidbodyType2D.Dynamic;
                 _rigidbody.gravityScale = 0;
                 _rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
                 _rigidbody.sleepMode = RigidbodySleepMode2D.NeverSleep;
+                _rigidbody.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
             }
             else
             {
                 _rigidbody.bodyType = RigidbodyType2D.Kinematic;
+                _rigidbody.useFullKinematicContacts = false;
             }
 
             if (IsOwner)
             {
                 _clientPredictedTarget = transform.position;
+            }
+            else
+            {
+                _clientPredictedTarget = _serverTargetPosition.Value;
             }
         }
 
@@ -45,6 +58,15 @@ namespace AvatarChat.Core.Components
             {
                 HandleInput();
                 PredictMovement();
+            }
+
+            if (!IsOwner && !IsServer)
+            {
+                transform.position = Vector2.MoveTowards(
+                    transform.position,
+                    _serverTargetPosition.Value,
+                    _speed * Time.deltaTime
+                );
             }
         }
 
@@ -82,7 +104,7 @@ namespace AvatarChat.Core.Components
         private void MoveTowardsTarget()
         {
             Vector2 currentPos = _rigidbody.position;
-            if (currentPos != _serverTargetPosition.Value)
+            if (Vector2.Distance(currentPos, _serverTargetPosition.Value) > 0.01f)
             {
                 _rigidbody.WakeUp();
                 Vector2 nextPos = Vector2.MoveTowards(
