@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Emotji
+  m_EditorClassIdentifier: 
+  m_GroupName: Emotji
+  m_GUID: 67e8bcd121fe2964ca7923b132103dee
+  m_SerializeEntries:
+  - m_GUID: 8efc454de0673ae4abab904a80863b10
+    m_Address: Assets/Sprites/UI/Emotji/sticker_2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d5039ca05f045a048812b31e43fcc742
+    m_Address: Assets/Sprites/UI/Emotji/sticker.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 90852dcf7bc5a3f4e912ca202bf9f505, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 997dfec6cf0f34843895994b028781e5, type: 2}
+    - {fileID: 11400000, guid: 577b1442a864d9943a719445156ec29d, type: 2}

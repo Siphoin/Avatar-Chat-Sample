@@ -50,7 +50,7 @@ namespace AvatarChat.Network.Test
 
             if (Input.GetKeyDown(KeyCode.E))
             {
-                int garbageValue = Random.Range(int.MinValue, int.MaxValue);
+                int garbageValue = Random.Range(0, 2);
                 chatHandler.SendEmojiMessage(garbageValue);
             }
         }

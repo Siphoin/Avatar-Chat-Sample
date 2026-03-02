@@ -14,61 +14,6 @@ namespace AvatarChat.Meta.SO
         [SerializeField] private CharacterDirectionData[] _directionData;
         public IEnumerable<CharacterDirectionData> DirectionData => _directionData;
 
-        private readonly List<AsyncOperationHandle<Sprite>> _handles = new();
-
-        private bool _isLoaded;
-        private int _referenceCount;
-        private Task _loadingTask;
-
-        public async Task LoadSpritesAsync()
-        {
-            _referenceCount++;
-
-            if (_isLoaded) return;
-
-            if (_loadingTask != null && !_loadingTask.IsCompleted)
-            {
-                await _loadingTask;
-                return;
-            }
-
-            _loadingTask = InternalLoadAsync();
-            await _loadingTask;
-        }
-
-        private async Task InternalLoadAsync()
-        {
-            foreach (var data in _directionData)
-            {
-                var handle = data.SpriteReference.LoadAssetAsync();
-                _handles.Add(handle);
-            }
-
-            foreach (var handle in _handles)
-            {
-                await handle.Task;
-            }
-
-            _isLoaded = true;
-        }
-
-        public void ReleaseSprites()
-        {
-            _referenceCount--;
-
-            if (_referenceCount <= 0)
-            {
-                foreach (var handle in _handles)
-                {
-                    if (handle.IsValid()) Addressables.Release(handle);
-                }
-                _handles.Clear();
-                _isLoaded = false;
-                _loadingTask = null;
-                _referenceCount = 0;
-            }
-        }
-
         public Sprite GetSpriteForDirection(CharacterDirectionType direction)
         {
             foreach (var data in _directionData)
