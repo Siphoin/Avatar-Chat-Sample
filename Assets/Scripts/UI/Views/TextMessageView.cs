@@ -11,7 +11,7 @@ namespace AvatarChat.UI.Views
 
         protected override void OnMessageSet(NetworkMessage message)
         {
-            throw new System.NotImplementedException();
+            _textContent.text = System.Text.Encoding.UTF8.GetString(message.Data);
         }
     }
 }

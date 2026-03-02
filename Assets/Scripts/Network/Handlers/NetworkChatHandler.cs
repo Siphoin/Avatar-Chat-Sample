@@ -35,7 +35,8 @@ namespace AvatarChat.Network.Handlers
             {
                 OwnerClientId = rpcParams.Receive.SenderClientId,
                 Type = type,
-                Data = data
+                Data = data,
+                InstanceId = new(Guid.NewGuid()),
             };
 
             ProcessNewMessage(message);

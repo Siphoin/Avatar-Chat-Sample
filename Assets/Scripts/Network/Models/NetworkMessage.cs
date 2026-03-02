@@ -10,6 +10,7 @@ namespace AvatarChat.Network.Models
         public ulong OwnerClientId;
         public MessageType Type;
         public byte[] Data;
+        public NetworkGuid InstanceId;
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
@@ -21,6 +22,7 @@ namespace AvatarChat.Network.Models
                 int len = packed.Length;
                 serializer.SerializeValue(ref len);
                 serializer.SerializeValue(ref packed);
+                serializer.SerializeValue(ref InstanceId);
             }
             else
             {

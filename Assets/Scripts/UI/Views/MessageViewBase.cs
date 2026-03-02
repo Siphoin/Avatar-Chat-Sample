@@ -6,7 +6,12 @@ namespace AvatarChat.UI.Views
     public abstract class MessageViewBase : MonoBehaviour, IMessageView
     {
         private NetworkMessage _message;
+        private Transform _startParent;
 
+        private void Awake()
+        {
+            _startParent = transform.parent;
+        }
         public void SetMessage(NetworkMessage message)
         {
             _message = message;
@@ -15,6 +20,10 @@ namespace AvatarChat.UI.Views
 
         public void SetStateVisible(bool visible)
         {
+            if (!visible)
+            {
+                transform.SetParent(_startParent, false);
+            }
             gameObject.SetActive(visible);
         }
 

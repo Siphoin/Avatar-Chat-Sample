@@ -576,13 +576,14 @@ GameObject:
   - component: {fileID: 2211086951280726549}
   - component: {fileID: 1712541804224126089}
   - component: {fileID: 6636261456768679782}
+  - component: {fileID: 6463682952774457132}
   m_Layer: 2
   m_Name: BubbleContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2211086951280726549
 RectTransform:
   m_ObjectHideFlags: 0
@@ -600,7 +601,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 76}
-  m_SizeDelta: {x: 401.3, y: 163.61}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1712541804224126089
 MonoBehaviour:
@@ -642,3 +643,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 2
   m_VerticalFit: 2
+--- !u!114 &6463682952774457132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8633183511987047845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c071fa2ae8d9ad4a835afcaa3691f41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
