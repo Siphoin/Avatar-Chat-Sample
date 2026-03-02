@@ -8,15 +8,55 @@ using AvatarChat.Network.Signals;
 using Zenject;
 using Cysharp.Threading.Tasks;
 using AvatarChat.Network.Configs;
+using UniRx;
 
 namespace AvatarChat.Network.Handlers
 {
-    public class NetworkChatHandler : SubNetworkHandler
+    public class NetworkChatHandler : SubNetworkHandler, IDisposable
     {
         [Inject] private SignalBus _signalBus;
         [Inject] private NetworkChatHandlerConfig _config;
 
         private readonly List<NetworkMessage> _messages = new();
+        private readonly CompositeDisposable _disposables = new();
+
+        public void Start()
+        {
+            _signalBus.GetStream<PlayerJoinedRoomSignal>()
+                .Subscribe(OnPlayerJoined)
+                .AddTo(_disposables);
+        }
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
+        }
+
+        private void OnPlayerJoined(PlayerJoinedRoomSignal signal)
+        {
+            if (!NetworkManager.Singleton.IsServer) return;
+
+            foreach (var message in _messages)
+            {
+                var rpcParams = new RpcParams
+                {
+                    Send = new RpcSendParams
+                    {
+                        Target = NetworkManager.Singleton.RpcTarget.Single(signal.ClientId, RpcTargetUse.Temp)
+                    }
+                };
+
+                SendHistoryMessageClientRpc(message, rpcParams);
+            }
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        private void SendHistoryMessageClientRpc(NetworkMessage message, RpcParams rpcParams)
+        {
+            if (_messages.Any(m => m.InstanceId.Equals(message.InstanceId))) return;
+
+            ProcessNewMessage(message);
+        }
 
         public void SendTextMessage(string text)
         {
@@ -35,7 +75,6 @@ namespace AvatarChat.Network.Handlers
         {
             var senderId = rpcParams.Receive.SenderClientId;
 
-            // Проверка лимита на сервере перед рассылкой
             var playerMessages = _messages.Where(m => m.OwnerClientId == senderId).ToList();
             if (playerMessages.Count >= _config.MaxMessageByPlayer)
             {
@@ -59,6 +98,7 @@ namespace AvatarChat.Network.Handlers
         [Rpc(SendTo.NotServer)]
         private void BroadcastMessageClientRpc(NetworkMessage message)
         {
+            if (_messages.Any(m => m.InstanceId.Equals(message.InstanceId))) return;
             ProcessNewMessage(message);
         }
 
