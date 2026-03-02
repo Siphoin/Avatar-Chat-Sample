@@ -152,6 +152,7 @@ GameObject:
   - component: {fileID: 8745916243762869083}
   - component: {fileID: 2707275002305226539}
   - component: {fileID: 7821321292126951176}
+  - component: {fileID: 5620288423795775037}
   m_Layer: 2
   m_Name: MessageTextView
   m_TagString: Untagged
@@ -269,4 +270,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f16f8ffa6a9fe184d8759248d05dd4db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _background: {fileID: 892785980798770243}
   _textContent: {fileID: 5165142711720431417}
+--- !u!114 &5620288423795775037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8531912000098460633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44d851137fa5d23459f96f4783014815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _background: {fileID: 892785980798770243}
+  _rectTransform: {fileID: 8077879345153836751}
