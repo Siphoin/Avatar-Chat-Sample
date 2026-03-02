@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 400782a467f9a6c46b83c8827188a191, type: 3}
+  m_Name: ScriptableCharacter
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 0
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  _guidObject: c8ac79c9-12c4-4cc2-8738-95c3deb0e3fb
+  _directionData:
+  - _direction: 0
+    _spriteReference:
+      m_AssetGUID: 1c09821e99abfd941989f1205ac00844
+      m_SubObjectName: character_up
+      m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 1
+  - _direction: 4
+    _spriteReference:
+      m_AssetGUID: 5cbee449d4b37cc45a38ea9115f86a69
+      m_SubObjectName: character_down
+      m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 1
+  - _direction: 2
+    _spriteReference:
+      m_AssetGUID: 8abc70b6e6c34b540bbc3e1953cac78d
+      m_SubObjectName: character_right
+      m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 1
+  - _direction: 6
+    _spriteReference:
+      m_AssetGUID: aac44bdc1c22acd4f9f700d18452c8f5
+      m_SubObjectName: character_left
+      m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 1
+  - _direction: 1
+    _spriteReference:
+      m_AssetGUID: d5d4a2fa0db128c4d86113107b5dd1d5
+      m_SubObjectName: character_right_up
+      m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 1
+  - _direction: 7
+    _spriteReference:
+      m_AssetGUID: 378f5ded6b092354793fa16603f1f6c6
+      m_SubObjectName: character_left_uppng
+      m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 1
+  - _direction: 5
+    _spriteReference:
+      m_AssetGUID: bf82b02dd355c1145a9126762cfcc97a
+      m_SubObjectName: character_left_down
+      m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 1
+  - _direction: 3
+    _spriteReference:
+      m_AssetGUID: ba189088b38ab5a4faf9a37d3a6a46a9
+      m_SubObjectName: character_right_down
+      m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 1

@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 7206040703841203653}
   - component: {fileID: 6745918020859207942}
   - component: {fileID: 7098209265681036377}
+  - component: {fileID: 3938460276305672984}
   m_Layer: 6
   m_Name: Character
   m_TagString: Untagged
@@ -105,6 +106,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  _characterData: {fileID: 11400000, guid: 3993ad45ca3d47d488b4cacc32a0aca6, type: 2}
 --- !u!114 &9107051847620753717
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -311,6 +313,21 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &3938460276305672984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2843099814538336560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fa101c6e9ad41e4a97ca9d9e3f8e64c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  _spriteRenderer: {fileID: 5184811927332589748}
+  _character: {fileID: -6129402384619767578}
 --- !u!1 &3108017743485295347
 GameObject:
   m_ObjectHideFlags: 0
