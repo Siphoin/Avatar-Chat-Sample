@@ -18,6 +18,7 @@ namespace AvatarChat.Network.Handlers
         [Inject] private NetworkChatHandlerConfig _config;
 
         private readonly List<NetworkMessage> _messages = new();
+        private readonly Dictionary<NetworkGuid, float> _messageCreationTimes = new();
         private readonly CompositeDisposable _disposables = new();
 
         public void Start()
@@ -38,6 +39,13 @@ namespace AvatarChat.Network.Handlers
 
             foreach (var message in _messages)
             {
+                if (!_messageCreationTimes.TryGetValue(message.InstanceId, out float createdAt)) continue;
+
+                float elapsed = UnityEngine.Time.time - createdAt;
+                float remainingLife = _config.LifeStyleMessage - elapsed;
+
+                if (remainingLife <= 0) continue;
+
                 var rpcParams = new RpcParams
                 {
                     Send = new RpcSendParams
@@ -46,16 +54,16 @@ namespace AvatarChat.Network.Handlers
                     }
                 };
 
-                SendHistoryMessageClientRpc(message, rpcParams);
+                SendHistoryMessageClientRpc(message, remainingLife, rpcParams);
             }
         }
 
         [Rpc(SendTo.SpecifiedInParams)]
-        private void SendHistoryMessageClientRpc(NetworkMessage message, RpcParams rpcParams)
+        private void SendHistoryMessageClientRpc(NetworkMessage message, float remainingLife, RpcParams rpcParams)
         {
             if (_messages.Any(m => m.InstanceId.Equals(message.InstanceId))) return;
 
-            ProcessNewMessage(message);
+            ProcessNewMessage(message, remainingLife);
         }
 
         public void SendTextMessage(string text)
@@ -91,7 +99,7 @@ namespace AvatarChat.Network.Handlers
                 InstanceId = new(Guid.NewGuid()),
             };
 
-            ProcessNewMessage(message);
+            ProcessNewMessage(message, _config.LifeStyleMessage);
             BroadcastMessageClientRpc(message);
         }
 
@@ -99,7 +107,7 @@ namespace AvatarChat.Network.Handlers
         private void BroadcastMessageClientRpc(NetworkMessage message)
         {
             if (_messages.Any(m => m.InstanceId.Equals(message.InstanceId))) return;
-            ProcessNewMessage(message);
+            ProcessNewMessage(message, _config.LifeStyleMessage);
         }
 
         [Rpc(SendTo.NotServer)]
@@ -107,19 +115,25 @@ namespace AvatarChat.Network.Handlers
         {
             var messageToRemove = _messages.FirstOrDefault(m => m.InstanceId.Equals(instanceId));
             RemoveAndDestroyInternal(messageToRemove);
+            
         }
 
-        private void ProcessNewMessage(NetworkMessage message)
+        private void ProcessNewMessage(NetworkMessage message, float lifeTime)
         {
             _messages.Add(message);
-            _signalBus.Fire(new NewChatMessageSignal(message));
 
-            HandleMessageLifecycle(message).Forget();
+            if (NetworkManager.Singleton.IsServer)
+            {
+                _messageCreationTimes[message.InstanceId] = UnityEngine.Time.time;
+            }
+
+            _signalBus.Fire(new NewChatMessageSignal(message));
+            HandleMessageLifecycle(message, lifeTime).Forget();
         }
 
-        private async UniTaskVoid HandleMessageLifecycle(NetworkMessage message)
+        private async UniTaskVoid HandleMessageLifecycle(NetworkMessage message, float lifeTime)
         {
-            await UniTask.Delay(TimeSpan.FromSeconds(_config.LifeStyleMessage));
+            await UniTask.Delay(TimeSpan.FromSeconds(lifeTime));
             RemoveAndDestroyInternal(message);
         }
 
@@ -127,6 +141,7 @@ namespace AvatarChat.Network.Handlers
         {
             if (_messages.Remove(message))
             {
+                _messageCreationTimes.Remove(message.InstanceId);
                 _signalBus.Fire(new DestroyChatMessageSignal(message));
             }
         }
