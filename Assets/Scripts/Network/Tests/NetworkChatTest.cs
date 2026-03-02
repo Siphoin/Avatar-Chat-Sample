@@ -5,6 +5,7 @@ using Unity.Netcode;
 using UnityEngine;
 using Zenject;
 using UniRx;
+using System.Linq;
 
 namespace AvatarChat.Network.Test
 {
@@ -13,6 +14,8 @@ namespace AvatarChat.Network.Test
         [Inject] private INetworkHandler _networkHandler;
         [Inject] private SignalBus _signalBus;
 
+        private const string Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=";
+
         private void Start()
         {
             _signalBus.GetStream<NewChatMessageSignal>()
@@ -20,16 +23,16 @@ namespace AvatarChat.Network.Test
                 {
                     string content = sig.Message.Type == Models.MessageType.Text
                         ? System.Text.Encoding.UTF8.GetString(sig.Message.Data)
-                        : $"Emoji ID: {System.BitConverter.ToInt32(sig.Message.Data, 0)}";
+                        : $"Emoji ID/Garbage: {System.BitConverter.ToInt32(sig.Message.Data, 0)}";
 
-                    Debug.Log($"[Chat Test] New Message from {sig.Message.OwnerClientId}: {content}");
+                    Debug.Log($"<color=green>[Chat Test]</color> New Message from {sig.Message.OwnerClientId}: {content}");
                 })
                 .AddTo(this);
 
             _signalBus.GetStream<DestroyChatMessageSignal>()
                 .Subscribe(sig =>
                 {
-                    Debug.Log($"[Chat Test] Message from {sig.Message.OwnerClientId} destroyed by timeout.");
+                    Debug.Log($"<color=red>[Chat Test]</color> Message from {sig.Message.OwnerClientId} (ID: {sig.Message.InstanceId}) removed (limit or timeout).");
                 })
                 .AddTo(this);
         }
@@ -41,14 +44,21 @@ namespace AvatarChat.Network.Test
 
             if (Input.GetKeyDown(KeyCode.T))
             {
-                chatHandler.SendTextMessage($"Hello from {NetworkManager.Singleton.LocalClientId} at {Time.time}");
+                string randomText = GenerateRandomString(Random.Range(5, 15));
+                chatHandler.SendTextMessage(randomText);
             }
 
             if (Input.GetKeyDown(KeyCode.E))
             {
-                int randomEmojiId = Random.Range(1, 10);
-                chatHandler.SendEmojiMessage(randomEmojiId);
+                int garbageValue = Random.Range(int.MinValue, int.MaxValue);
+                chatHandler.SendEmojiMessage(garbageValue);
             }
+        }
+
+        private string GenerateRandomString(int length)
+        {
+            return new string(Enumerable.Repeat(Chars, length)
+                .Select(s => s[Random.Range(0, s.Length)]).ToArray());
         }
     }
 }
