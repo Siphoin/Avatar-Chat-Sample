@@ -14,31 +14,21 @@ namespace AvatarChat.Network.Models
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
-            MessagePackFormatter formatter = new();
+            serializer.SerializeValue(ref OwnerClientId);
+            serializer.SerializeValue(ref Type);
+            serializer.SerializeValue(ref Data);
 
-            if (serializer.IsWriter)
-            {
-                byte[] packed = formatter.Serialize(this);
-                int len = packed.Length;
-                serializer.SerializeValue(ref len);
-                serializer.SerializeValue(ref packed);
-                serializer.SerializeValue(ref InstanceId);
-            }
-            else
-            {
-                int len = 0;
-                serializer.SerializeValue(ref len);
-                byte[] packed = new byte[len];
-                serializer.SerializeValue(ref packed);
-                this = formatter.Deserialize<NetworkMessage>(packed);
-            }
+            serializer.SerializeValue(ref InstanceId);
         }
 
         public bool Equals(NetworkMessage other)
         {
-            return OwnerClientId == other.OwnerClientId &&
-                   Type == other.Type &&
-                   Data == other.Data;
+            return InstanceId.Equals(other.InstanceId);
+        }
+
+        public override int GetHashCode()
+        {
+            return InstanceId.GetHashCode();
         }
     }
 }
