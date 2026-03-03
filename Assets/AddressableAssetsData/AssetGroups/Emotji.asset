@@ -15,13 +15,213 @@ MonoBehaviour:
   m_GroupName: Emotji
   m_GUID: 67e8bcd121fe2964ca7923b132103dee
   m_SerializeEntries:
+  - m_GUID: 02213baeb3dcc4c46a7eac186bfe109f
+    m_Address: Assets/Sprites/UI/Emotji/sticker_24.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 028553ab85e30754a841d81212171436
+    m_Address: Assets/Sprites/UI/Emotji/sticker_7.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0545221f0d8d1ae4caff0a1b8492968f
+    m_Address: Assets/Sprites/UI/Emotji/sticker_25.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 05f627bdff3f9244984decf355810e6c
+    m_Address: Assets/Sprites/UI/Emotji/sticker_5.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0c96884d49de0aa4faa3e619b7f15264
+    m_Address: Assets/Sprites/UI/Emotji/sticker_6.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0cf47bc1e00feae4d9c0699f6a4e2b0b
+    m_Address: Assets/Sprites/UI/Emotji/sticker_11.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 30f98999387969d49b4b81c5454d7e26
+    m_Address: Assets/Sprites/UI/Emotji/sticker_35.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3bd47adbcefac5d458a81fa238a17d7c
+    m_Address: Assets/Sprites/UI/Emotji/sticker_39.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 400ca28730812d14ea59b55c3de40653
+    m_Address: Assets/Sprites/UI/Emotji/sticker_15.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 40e936cbfd18d474d9a0c90a92c4a961
+    m_Address: Assets/Sprites/UI/Emotji/sticker_34.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 467a4aa688238d14898a4fe674a08096
+    m_Address: Assets/Sprites/UI/Emotji/sticker_8.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e5e21dd4a46d8b48a00e07507cf7eb1
+    m_Address: Assets/Sprites/UI/Emotji/sticker_43.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 56041da826e64cd44b956bad390d3c8e
+    m_Address: Assets/Sprites/UI/Emotji/sticker_20.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5acc62060095fb64398bdf6243c18a5e
+    m_Address: Assets/Sprites/UI/Emotji/sticker_33.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5bddf299eda67514881eeb38da5818ff
+    m_Address: Assets/Sprites/UI/Emotji/sticker_30.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5cf74f6541c26df4fa5d3f319e0f4505
+    m_Address: Assets/Sprites/UI/Emotji/sticker_10.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 71903f52063145a4888ae8aa6f6f1c98
+    m_Address: Assets/Sprites/UI/Emotji/sticker_19.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8efc454de0673ae4abab904a80863b10
     m_Address: Assets/Sprites/UI/Emotji/sticker_2.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8f44c85269d996f44987493479a4d390
+    m_Address: Assets/Sprites/UI/Emotji/sticker_22.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9062b32635343dc4db8d559905bb11c9
+    m_Address: Assets/Sprites/UI/Emotji/sticker_27.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9aa31ee892cf9db4a826afa8a2fd8615
+    m_Address: Assets/Sprites/UI/Emotji/sticker_44.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9b7d3cb5d7bfe2049bac318c549e8515
+    m_Address: Assets/Sprites/UI/Emotji/sticker_31.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9e1fda24f5fb7e04283ba06737199ff3
+    m_Address: Assets/Sprites/UI/Emotji/sticker_23.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9fdf077b9f6abd840b157af05d5851e2
+    m_Address: Assets/Sprites/UI/Emotji/sticker_36.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a97b1ca11485b2241be2e11da2ad5397
+    m_Address: Assets/Sprites/UI/Emotji/sticker_4.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: acc59316f7013d54fba16614b6f453b2
+    m_Address: Assets/Sprites/UI/Emotji/sticker_28.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad05a2ac39af29640bd5c5deecf0fe23
+    m_Address: Assets/Sprites/UI/Emotji/sticker_29.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: adff2b91043dd104a98a51b45051ad11
+    m_Address: Assets/Sprites/UI/Emotji/sticker_38.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b46e96a5d10d62f4eb220a93eeb3b67b
+    m_Address: Assets/Sprites/UI/Emotji/sticker_26.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb22b98d7caba264b98198bb5906cf33
+    m_Address: Assets/Sprites/UI/Emotji/sticker_9.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bde25eb2ea3d758479da53f4926c50f7
+    m_Address: Assets/Sprites/UI/Emotji/sticker_37.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c603a47436a48f54c97ad68ec01a15c2
+    m_Address: Assets/Sprites/UI/Emotji/sticker_41.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c664fa82fe6bae049ac71bf20edd589a
+    m_Address: Assets/Sprites/UI/Emotji/sticker_3.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d15c2f720ff1ea142be1401ccc347d1c
+    m_Address: Assets/Sprites/UI/Emotji/sticker_42.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d25e0357db3b6c048aa07ee367e53cf4
+    m_Address: Assets/Sprites/UI/Emotji/sticker_40.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d3ce5c1ae925d4c4695018979fea6423
+    m_Address: Assets/Sprites/UI/Emotji/sticker_21.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d5039ca05f045a048812b31e43fcc742
     m_Address: Assets/Sprites/UI/Emotji/sticker.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dcf36b75305162c42aae8af872163d81
+    m_Address: Assets/Sprites/UI/Emotji/sticker_32.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: df8d0beaeead9bb4dbe04f0e86bd8c9d
+    m_Address: Assets/Sprites/UI/Emotji/sticker_13.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e07b3db08ed91e5429b207d84f84f600
+    m_Address: Assets/Sprites/UI/Emotji/sticker_14.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eca28ee249d120d4f940e3e42f9b38ae
+    m_Address: Assets/Sprites/UI/Emotji/sticker_16.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f96a9d25d8fca964eb7f644090a11169
+    m_Address: Assets/Sprites/UI/Emotji/sticker_12.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

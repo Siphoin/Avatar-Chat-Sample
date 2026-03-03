@@ -35,3 +35,243 @@ MonoBehaviour:
       Culture=neutral, PublicKeyToken=null
     m_SubObjectGUID: 
     m_EditorAssetChanged: 1
+  - m_AssetGUID: c664fa82fe6bae049ac71bf20edd589a
+    m_SubObjectName: sticker_3
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: a97b1ca11485b2241be2e11da2ad5397
+    m_SubObjectName: sticker_4
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: 05f627bdff3f9244984decf355810e6c
+    m_SubObjectName: sticker_5
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: 0c96884d49de0aa4faa3e619b7f15264
+    m_SubObjectName: sticker_6
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: 028553ab85e30754a841d81212171436
+    m_SubObjectName: sticker_7
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: 467a4aa688238d14898a4fe674a08096
+    m_SubObjectName: sticker_8
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: bb22b98d7caba264b98198bb5906cf33
+    m_SubObjectName: sticker_9
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: 5cf74f6541c26df4fa5d3f319e0f4505
+    m_SubObjectName: sticker_10
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: 0cf47bc1e00feae4d9c0699f6a4e2b0b
+    m_SubObjectName: sticker_11
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: f96a9d25d8fca964eb7f644090a11169
+    m_SubObjectName: sticker_12
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: df8d0beaeead9bb4dbe04f0e86bd8c9d
+    m_SubObjectName: sticker_13
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: e07b3db08ed91e5429b207d84f84f600
+    m_SubObjectName: sticker_14
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: 400ca28730812d14ea59b55c3de40653
+    m_SubObjectName: sticker_15
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: eca28ee249d120d4f940e3e42f9b38ae
+    m_SubObjectName: sticker_16
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: 71903f52063145a4888ae8aa6f6f1c98
+    m_SubObjectName: sticker_19
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: 56041da826e64cd44b956bad390d3c8e
+    m_SubObjectName: sticker_20
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: d3ce5c1ae925d4c4695018979fea6423
+    m_SubObjectName: sticker_21
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: 8f44c85269d996f44987493479a4d390
+    m_SubObjectName: sticker_22
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: 9e1fda24f5fb7e04283ba06737199ff3
+    m_SubObjectName: sticker_23
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: 02213baeb3dcc4c46a7eac186bfe109f
+    m_SubObjectName: sticker_24
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: 0545221f0d8d1ae4caff0a1b8492968f
+    m_SubObjectName: sticker_25
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: b46e96a5d10d62f4eb220a93eeb3b67b
+    m_SubObjectName: sticker_26
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: 9062b32635343dc4db8d559905bb11c9
+    m_SubObjectName: sticker_27
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: acc59316f7013d54fba16614b6f453b2
+    m_SubObjectName: sticker_28
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: ad05a2ac39af29640bd5c5deecf0fe23
+    m_SubObjectName: sticker_29
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: 5bddf299eda67514881eeb38da5818ff
+    m_SubObjectName: sticker_30
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: 9b7d3cb5d7bfe2049bac318c549e8515
+    m_SubObjectName: sticker_31
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: dcf36b75305162c42aae8af872163d81
+    m_SubObjectName: sticker_32
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: 5acc62060095fb64398bdf6243c18a5e
+    m_SubObjectName: sticker_33
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: 40e936cbfd18d474d9a0c90a92c4a961
+    m_SubObjectName: sticker_34
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: 30f98999387969d49b4b81c5454d7e26
+    m_SubObjectName: sticker_35
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: 9fdf077b9f6abd840b157af05d5851e2
+    m_SubObjectName: sticker_36
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: bde25eb2ea3d758479da53f4926c50f7
+    m_SubObjectName: sticker_37
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: adff2b91043dd104a98a51b45051ad11
+    m_SubObjectName: sticker_38
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: 3bd47adbcefac5d458a81fa238a17d7c
+    m_SubObjectName: sticker_39
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: d25e0357db3b6c048aa07ee367e53cf4
+    m_SubObjectName: sticker_40
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: c603a47436a48f54c97ad68ec01a15c2
+    m_SubObjectName: sticker_41
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: d15c2f720ff1ea142be1401ccc347d1c
+    m_SubObjectName: sticker_42
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: 4e5e21dd4a46d8b48a00e07507cf7eb1
+    m_SubObjectName: sticker_43
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  - m_AssetGUID: 9aa31ee892cf9db4a826afa8a2fd8615
+    m_SubObjectName: sticker_44
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1

@@ -12,6 +12,7 @@ namespace AvatarChat.UI.Views
     {
         [SerializeField] private Image _emojiContent;
         [Inject] private IEmotjiProviderHandler _emojiProvider;
+        [Inject] private ILoadingMockHandler _loadingMockHandler;
 
         protected override void OnMessageSet(NetworkMessage message)
         {
@@ -20,6 +21,7 @@ namespace AvatarChat.UI.Views
 
         private async UniTaskVoid LoadAndShowEmoji(NetworkMessage message)
         {
+            var mockLoading = _loadingMockHandler.Show(_emojiContent.transform);
             _emojiContent.sprite = null;
 
             var sprite = await _emojiProvider.GetSpriteForMessage(message);
@@ -29,6 +31,8 @@ namespace AvatarChat.UI.Views
                 _emojiContent.sprite = sprite;
                 _emojiContent.SetAdaptiveSize();
             }
+
+            _loadingMockHandler.Hide(mockLoading);
         }
     }
 }
