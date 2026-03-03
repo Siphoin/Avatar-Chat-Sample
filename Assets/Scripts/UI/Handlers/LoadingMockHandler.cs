@@ -1,4 +1,5 @@
 ﻿using AvatarChat.Main;
+using AvatarChat.UI.Configs;
 using AvatarChat.UI.Views;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -9,9 +10,7 @@ namespace AvatarChat.UI
 {
     public class LoadingMockHandler : MonoBehaviour, ILoadingMockHandler
     {
-        [SerializeField] private string _address;
-        [SerializeField] private int _initialPoolSize = 1;
-
+        [Inject] private LoadingMockHandlerConfig _config;
         [SerializeField] private DiContainer _diContainer;
         private PoolMono<LoadingMockView> _pool;
         private GameObject _loadedPrefab;
@@ -23,13 +22,13 @@ namespace AvatarChat.UI
 
         private async UniTask InitializeAsync()
         {
-            var handle = Addressables.LoadAssetAsync<GameObject>(_address);
+            var handle = Addressables.LoadAssetAsync<GameObject>(_config.Address);
             _loadedPrefab = await handle.ToUniTask();
 
             if (_loadedPrefab != null)
             {
                 var view = _loadedPrefab.GetComponent<LoadingMockView>();
-                _pool = new PoolMono<LoadingMockView>(view, transform, _diContainer, _initialPoolSize, true);
+                _pool = new PoolMono<LoadingMockView>(view, transform, _diContainer, _config.InitialPoolSize, true);
             }
         }
 

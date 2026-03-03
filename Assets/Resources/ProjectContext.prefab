@@ -270,6 +270,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b1b091b6581d16842b3389c5a13c33cf, type: 2}
   - {fileID: 11400000, guid: fbd6950c027e2934fa9120b41ab44d7e, type: 2}
   - {fileID: 11400000, guid: 2a96ecb668ae31c47b186bd3674b5f81, type: 2}
+  - {fileID: 11400000, guid: 5bb900eb02b2ffa4aa81714e4f84d377, type: 2}
 --- !u!1 &3550055150825039089
 GameObject:
   m_ObjectHideFlags: 0
@@ -448,8 +449,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e6f9fd910d59744bbbb5a2e759c1a4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _address: LoadingMock
-  _initialPoolSize: 25
 --- !u!1 &4359557178308967131
 GameObject:
   m_ObjectHideFlags: 0
