@@ -1,0 +1,923 @@
+fileFormatVersion: 2
+guid: 57762ccefc440f24eb9037ab8d981b94
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3261769530826072898
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_0
+  - first:
+      213: 7198356033293953265
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_1
+  - first:
+      213: 8925873085017242566
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_2
+  - first:
+      213: 4872432777030203162
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_3
+  - first:
+      213: -6978660178440839464
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_4
+  - first:
+      213: 3803896371723812082
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_5
+  - first:
+      213: 2933757887175156252
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_6
+  - first:
+      213: 9144448790785754484
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_7
+  - first:
+      213: 8719239755843955953
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_8
+  - first:
+      213: -2543047167946747169
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_9
+  - first:
+      213: -2007484281821401060
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_10
+  - first:
+      213: -8354701207820456211
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_11
+  - first:
+      213: -1627209225623773181
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_12
+  - first:
+      213: 5858572007920329534
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_13
+  - first:
+      213: 2760273712804220640
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_14
+  - first:
+      213: -3877667743813835673
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_15
+  - first:
+      213: 6627793039913053265
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_16
+  - first:
+      213: -1785842085551687553
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_17
+  - first:
+      213: -8334076268290163240
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_18
+  - first:
+      213: 4685610137583878833
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_19
+  - first:
+      213: 9032066941405355368
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_20
+  - first:
+      213: 7511726902741809618
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_21
+  - first:
+      213: 1695443956278273221
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_22
+  - first:
+      213: -8230613537324314683
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_23
+  - first:
+      213: 296782228373306849
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_24
+  - first:
+      213: -1681664169037507568
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_25
+  - first:
+      213: 1428293380499654889
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_26
+  - first:
+      213: 768502323525623950
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_27
+  - first:
+      213: -7083167489368064240
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_28
+  - first:
+      213: 1330112663206672664
+    second: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_29
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 871
+        width: 161
+        height: 153
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ebc5befa4eddbb2d0800000000000000
+      internalID: -3261769530826072898
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_1
+      rect:
+        serializedVersion: 2
+        x: 186
+        y: 851
+        width: 116
+        height: 155
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f8a64b7ca2b5e360800000000000000
+      internalID: 7198356033293953265
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_2
+      rect:
+        serializedVersion: 2
+        x: 334
+        y: 825
+        width: 94
+        height: 177
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6cb3cae87421fdb70800000000000000
+      internalID: 8925873085017242566
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_3
+      rect:
+        serializedVersion: 2
+        x: 454
+        y: 851
+        width: 116
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a17fad2abcb5e9340800000000000000
+      internalID: 4872432777030203162
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_4
+      rect:
+        serializedVersion: 2
+        x: 584
+        y: 862
+        width: 149
+        height: 136
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8de9edfca81d62f90800000000000000
+      internalID: -6978660178440839464
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_5
+      rect:
+        serializedVersion: 2
+        x: 754
+        y: 842
+        width: 116
+        height: 156
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2fcbefe98972ac430800000000000000
+      internalID: 3803896371723812082
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_6
+      rect:
+        serializedVersion: 2
+        x: 894
+        y: 818
+        width: 96
+        height: 176
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c126312314dc6b820800000000000000
+      internalID: 2933757887175156252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_7
+      rect:
+        serializedVersion: 2
+        x: 1034
+        y: 839
+        width: 166
+        height: 185
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4750981d9bb97ee70800000000000000
+      internalID: 9144448790785754484
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_8
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 683
+        width: 145
+        height: 147
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1fcea868c56f00970800000000000000
+      internalID: 8719239755843955953
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_9
+      rect:
+        serializedVersion: 2
+        x: 190
+        y: 654
+        width: 101
+        height: 164
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd2987b031845bcd0800000000000000
+      internalID: -2543047167946747169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_10
+      rect:
+        serializedVersion: 2
+        x: 342
+        y: 654
+        width: 95
+        height: 172
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c10fad98eabf324e0800000000000000
+      internalID: -2007484281821401060
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_11
+      rect:
+        serializedVersion: 2
+        x: 458
+        y: 674
+        width: 148
+        height: 143
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: deea55f34832e0c80800000000000000
+      internalID: -8354701207820456211
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_12
+      rect:
+        serializedVersion: 2
+        x: 623
+        y: 647
+        width: 95
+        height: 171
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 300e473a4ddfa69e0800000000000000
+      internalID: -1627209225623773181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_13
+      rect:
+        serializedVersion: 2
+        x: 760
+        y: 648
+        width: 102
+        height: 166
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e33632f7334dd4150800000000000000
+      internalID: 5858572007920329534
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_14
+      rect:
+        serializedVersion: 2
+        x: 884
+        y: 660
+        width: 144
+        height: 146
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ee4b8631567e4620800000000000000
+      internalID: 2760273712804220640
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_15
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 506
+        width: 144
+        height: 148
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7646cf45bb1cf2ac0800000000000000
+      internalID: -3877667743813835673
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_16
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 495
+        width: 146
+        height: 151
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15ce2dc77a6aafb50800000000000000
+      internalID: 6627793039913053265
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_17
+      rect:
+        serializedVersion: 2
+        x: 350
+        y: 484
+        width: 95
+        height: 170
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f78bfb1c51a6737e0800000000000000
+      internalID: -1785842085551687553
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_18
+      rect:
+        serializedVersion: 2
+        x: 454
+        y: 502
+        width: 147
+        height: 144
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8dd3d813ac9675c80800000000000000
+      internalID: -8334076268290163240
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_19
+      rect:
+        serializedVersion: 2
+        x: 619
+        y: 475
+        width: 95
+        height: 171
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b208ae3891a60140800000000000000
+      internalID: 4685610137583878833
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_20
+      rect:
+        serializedVersion: 2
+        x: 754
+        y: 469
+        width: 100
+        height: 165
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86dd30e7709585d70800000000000000
+      internalID: 9032066941405355368
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_21
+      rect:
+        serializedVersion: 2
+        x: 893
+        y: 479
+        width: 144
+        height: 147
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d9bba7b1d30f3860800000000000000
+      internalID: 7511726902741809618
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_22
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 324
+        width: 160
+        height: 137
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c4ac8e9b4d678710800000000000000
+      internalID: 1695443956278273221
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_23
+      rect:
+        serializedVersion: 2
+        x: 186
+        y: 305
+        width: 120
+        height: 149
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5cf4340789cf6cd80800000000000000
+      internalID: -8230613537324314683
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_24
+      rect:
+        serializedVersion: 2
+        x: 351
+        y: 287
+        width: 95
+        height: 171
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1edf6d14dd16e1400800000000000000
+      internalID: 296782228373306849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_25
+      rect:
+        serializedVersion: 2
+        x: 470
+        y: 310
+        width: 116
+        height: 148
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 014540d195789a8e0800000000000000
+      internalID: -1681664169037507568
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_26
+      rect:
+        serializedVersion: 2
+        x: 594
+        y: 319
+        width: 148
+        height: 131
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e849bb134152d310800000000000000
+      internalID: 1428293380499654889
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_27
+      rect:
+        serializedVersion: 2
+        x: 754
+        y: 302
+        width: 116
+        height: 148
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e80aec2aac44aaa00800000000000000
+      internalID: 768502323525623950
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_28
+      rect:
+        serializedVersion: 2
+        x: 898
+        y: 278
+        width: 96
+        height: 172
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01ffe9752b883bd90800000000000000
+      internalID: -7083167489368064240
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_29
+      rect:
+        serializedVersion: 2
+        x: 1034
+        y: 302
+        width: 120
+        height: 148
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 819bea18b62857210800000000000000
+      internalID: 1330112663206672664
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 285d9b97b03dd49428366132d5e39a60
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_0: -3261769530826072898
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_1: 7198356033293953265
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_10: -2007484281821401060
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_11: -8354701207820456211
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_12: -1627209225623773181
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_13: 5858572007920329534
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_14: 2760273712804220640
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_15: -3877667743813835673
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_16: 6627793039913053265
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_17: -1785842085551687553
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_18: -8334076268290163240
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_19: 4685610137583878833
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_2: 8925873085017242566
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_20: 9032066941405355368
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_21: 7511726902741809618
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_22: 1695443956278273221
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_23: -8230613537324314683
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_24: 296782228373306849
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_25: -1681664169037507568
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_26: 1428293380499654889
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_27: 768502323525623950
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_28: -7083167489368064240
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_29: 1330112663206672664
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_3: 4872432777030203162
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_4: -6978660178440839464
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_5: 3803896371723812082
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_6: 2933757887175156252
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_7: 9144448790785754484
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_8: 8719239755843955953
+      Browser Games - Club Penguin - Playable Characters - Penguin (Old Blue)-1-Photoroom_9: -2543047167946747169
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

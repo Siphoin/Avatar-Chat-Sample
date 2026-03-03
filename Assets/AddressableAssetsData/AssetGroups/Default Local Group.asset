@@ -14,47 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GroupName: Default Local Group
   m_GUID: 52790872f77b31142a4a0d1e3f76f077
-  m_SerializeEntries:
-  - m_GUID: 1c09821e99abfd941989f1205ac00844
-    m_Address: Assets/Sprites/testCharacter/character_up.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 378f5ded6b092354793fa16603f1f6c6
-    m_Address: Assets/Sprites/testCharacter/character_left_uppng.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5cbee449d4b37cc45a38ea9115f86a69
-    m_Address: Assets/Sprites/testCharacter/character_down.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8abc70b6e6c34b540bbc3e1953cac78d
-    m_Address: Assets/Sprites/testCharacter/character_right.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: aac44bdc1c22acd4f9f700d18452c8f5
-    m_Address: Assets/Sprites/testCharacter/character_left.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ba189088b38ab5a4faf9a37d3a6a46a9
-    m_Address: Assets/Sprites/testCharacter/character_right_down.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: bf82b02dd355c1145a9126762cfcc97a
-    m_Address: Assets/Sprites/testCharacter/character_left_down.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d5d4a2fa0db128c4d86113107b5dd1d5
-    m_Address: Assets/Sprites/testCharacter/character_right_up.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 90852dcf7bc5a3f4e912ca202bf9f505, type: 2}
   m_SchemaSet:
