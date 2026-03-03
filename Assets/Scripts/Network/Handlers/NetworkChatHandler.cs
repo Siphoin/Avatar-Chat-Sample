@@ -22,6 +22,7 @@ namespace AvatarChat.Network.Handlers
         private readonly List<NetworkMessage> _localClientMessages = new();
 
         private readonly Dictionary<NetworkGuid, float> _messageCreationTimes = new();
+        private readonly Dictionary<ulong, float> _playerLastMessageTime = new();
         private readonly CompositeDisposable _disposables = new();
 
         public void Start()
@@ -31,7 +32,11 @@ namespace AvatarChat.Network.Handlers
                 .AddTo(_disposables);
 
             _signalBus.GetStream<PlayerLeftSignal>()
-                .Subscribe(sig => _playerRooms.Remove(sig.ClientId))
+                .Subscribe(sig =>
+                {
+                    _playerRooms.Remove(sig.ClientId);
+                    _playerLastMessageTime.Remove(sig.ClientId);
+                })
                 .AddTo(_disposables);
         }
 
@@ -95,8 +100,21 @@ namespace AvatarChat.Network.Handlers
             var senderId = rpcParams.Receive.SenderClientId;
             if (!_playerRooms.TryGetValue(senderId, out var roomId)) return;
 
+            if (IsSpamming(senderId)) return;
+
             if (!_roomMessages.ContainsKey(roomId)) _roomMessages[roomId] = new List<NetworkMessage>();
             var messages = _roomMessages[roomId];
+
+            if (type == MessageType.Text)
+            {
+                string text = System.Text.Encoding.UTF8.GetString(data);
+                if (string.IsNullOrWhiteSpace(text)) return;
+            }
+            else if (type == MessageType.Emoji)
+            {
+                int emojiId = BitConverter.ToInt32(data, 0);
+                if (emojiId < 0) return;
+            }
 
             var playerMessages = messages.Where(m => m.OwnerClientId == senderId).ToList();
             if (playerMessages.Count >= _config.MaxMessageByPlayer)
@@ -116,6 +134,31 @@ namespace AvatarChat.Network.Handlers
 
             ProcessNewMessage(message, _config.LifeStyleMessage, roomId);
             BroadcastToRoom(roomId, message);
+        }
+
+        private bool IsSpamming(ulong clientId)
+        {
+            if (!_playerRooms.TryGetValue(clientId, out var roomId))
+                return false;
+
+            if (!_roomMessages.TryGetValue(roomId, out var messages))
+                return false;
+
+            int playerMessageCount = messages.Count(m => m.OwnerClientId == clientId);
+            float now = UnityEngine.Time.time;
+
+            float threshold = _config.SpamThresholdSeconds;
+            if (playerMessageCount >= _config.MaxMessageByPlayer - 1)
+                threshold = _config.SpamThresholdSeconds * 2f;
+
+            if (_playerLastMessageTime.TryGetValue(clientId, out float lastMessageTime))
+            {
+                if (now - lastMessageTime < threshold)
+                    return true;
+            }
+
+            _playerLastMessageTime[clientId] = now;
+            return false;
         }
 
         private void BroadcastToRoom(NetworkGuid roomId, NetworkMessage message)

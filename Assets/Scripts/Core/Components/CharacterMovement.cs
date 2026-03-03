@@ -6,13 +6,17 @@ using UnityEngine;
 namespace AvatarChat.Core.Components
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    [RequireComponent(typeof(NetworkRigidbody2D))]
     public class CharacterMovement : NetworkBehaviour
     {
         [SerializeField] private float _speed = 5f;
         [SerializeField, ReadOnly] private Rigidbody2D _rigidbody;
+        [SerializeField] private float _reconciliationSpeed = 15f;
+        [SerializeField] private float _errorThreshold = 0.5f;
 
         private Vector2 _clientPredictedTarget;
+        private Vector2 _lastServerPosition;
+        private bool _hasServerPosition;
+
         private readonly NetworkVariable<Vector2> _serverTargetPosition = new(
             readPerm: NetworkVariableReadPermission.Everyone,
             writePerm: NetworkVariableWritePermission.Server
@@ -33,23 +37,29 @@ namespace AvatarChat.Core.Components
                 _rigidbody.bodyType = RigidbodyType2D.Dynamic;
                 _rigidbody.gravityScale = 0;
                 _rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
-                _rigidbody.sleepMode = RigidbodySleepMode2D.NeverSleep;
                 _rigidbody.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
             }
             else
             {
                 _rigidbody.bodyType = RigidbodyType2D.Kinematic;
-                _rigidbody.useFullKinematicContacts = false;
             }
 
-            if (IsOwner)
-            {
-                _clientPredictedTarget = transform.position;
-            }
-            else
-            {
-                _clientPredictedTarget = _serverTargetPosition.Value;
-            }
+            _clientPredictedTarget = transform.position;
+            _lastServerPosition = transform.position;
+
+            _serverTargetPosition.OnValueChanged += OnServerTargetPositionChanged;
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            base.OnNetworkDespawn();
+            _serverTargetPosition.OnValueChanged -= OnServerTargetPositionChanged;
+        }
+
+        private void OnServerTargetPositionChanged(Vector2 previous, Vector2 current)
+        {
+            _lastServerPosition = current;
+            _hasServerPosition = true;
         }
 
         private void Update()
@@ -58,14 +68,32 @@ namespace AvatarChat.Core.Components
             {
                 HandleInput();
                 PredictMovement();
+                ReconcileWithServer();
             }
-
-            if (!IsOwner && !IsServer)
+            else if (!IsServer)
             {
                 transform.position = Vector2.MoveTowards(
                     transform.position,
                     _serverTargetPosition.Value,
                     _speed * Time.deltaTime
+                );
+            }
+        }
+
+        private void ReconcileWithServer()
+        {
+            if (!_hasServerPosition) return;
+
+            float distanceToTarget = Vector2.Distance(_clientPredictedTarget, _serverTargetPosition.Value);
+            if (distanceToTarget > 0.1f) return;
+
+            float error = Vector2.Distance(transform.position, _lastServerPosition);
+            if (error > _errorThreshold)
+            {
+                transform.position = Vector2.Lerp(
+                    transform.position,
+                    _lastServerPosition,
+                    _reconciliationSpeed * Time.deltaTime
                 );
             }
         }
@@ -90,11 +118,10 @@ namespace AvatarChat.Core.Components
 
         private void PredictMovement()
         {
-            Vector2 currentPos = transform.position;
-            if (currentPos != _clientPredictedTarget)
+            if ((Vector2)transform.position != _clientPredictedTarget)
             {
                 transform.position = Vector2.MoveTowards(
-                    currentPos,
+                    transform.position,
                     _clientPredictedTarget,
                     _speed * Time.deltaTime
                 );
@@ -103,12 +130,10 @@ namespace AvatarChat.Core.Components
 
         private void MoveTowardsTarget()
         {
-            Vector2 currentPos = _rigidbody.position;
-            if (Vector2.Distance(currentPos, _serverTargetPosition.Value) > 0.01f)
+            if (Vector2.Distance(_rigidbody.position, _serverTargetPosition.Value) > 0.01f)
             {
-                _rigidbody.WakeUp();
                 Vector2 nextPos = Vector2.MoveTowards(
-                    currentPos,
+                    _rigidbody.position,
                     _serverTargetPosition.Value,
                     _speed * Time.fixedDeltaTime
                 );
@@ -124,10 +149,7 @@ namespace AvatarChat.Core.Components
 
         private void OnValidate()
         {
-            if (!_rigidbody)
-            {
-                _rigidbody = GetComponent<Rigidbody2D>();
-            }
+            if (!_rigidbody) _rigidbody = GetComponent<Rigidbody2D>();
         }
     }
 }
