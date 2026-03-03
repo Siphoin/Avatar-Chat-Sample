@@ -82,12 +82,7 @@ namespace Zenject
 
         public void Remove(SceneContext context)
         {
-            bool removed = _map.Remove(context.gameObject.scene);
-
-            if (!removed)
-            {
-                Log.Warn("Failed to remove SceneContext from SceneContextRegistry");
-            }
+            _map.Remove(context.gameObject.scene);
         }
     }
 

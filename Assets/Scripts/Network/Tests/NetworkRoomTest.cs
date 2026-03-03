@@ -50,9 +50,17 @@ namespace AvatarChat.Network.Test
             if (Input.GetKeyDown(KeyCode.F7))
             {
                 var roomHandler = _networkHandler.GetSubHandler<NetworkRoomHandler>();
-                if (roomHandler != null && roomHandler.ActiveRooms.Count > 0)
+                if (roomHandler != null)
                 {
-                    roomHandler.RequestLeaveRoom(roomHandler.ActiveRooms[0].InstanceId);
+                    var roomPlayers = roomHandler.GetRoomPlayers();
+                    if (!roomPlayers.IsEmpty)
+                    {
+                        roomHandler.RequestLeaveRoom(roomPlayers.RoomId);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("[Test] Player is not in any room");
+                    }
                 }
             }
 

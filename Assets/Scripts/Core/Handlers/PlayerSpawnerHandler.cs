@@ -24,6 +24,10 @@ namespace AvatarChat.Core.Handlers
             _signalBus.GetStream<PlayerJoinedRoomSignal>()
                 .Subscribe(OnPlayerJoinedRoom)
                 .AddTo(_disposables);
+
+            _signalBus.GetStream<PlayerLeftRoomSignal>()
+                .Subscribe(OnPlayerLeftRoom)
+                .AddTo(_disposables);
         }
 
         public override void OnNetworkDespawn()
@@ -41,6 +45,24 @@ namespace AvatarChat.Core.Handlers
                 Vector3.zero,
                 Quaternion.identity
             );
+        }
+
+        private void OnPlayerLeftRoom(PlayerLeftRoomSignal signal)
+        {
+            if (!IsServer) return;
+
+            var connectedClients = NetworkManager.Singleton.ConnectedClients;
+            if (!connectedClients.TryGetValue(signal.ClientId, out var client))
+                return;
+
+            var ownedObjects = NetworkManager.Singleton.SpawnManager.GetClientOwnedObjects(signal.ClientId);
+            foreach (var networkObj in ownedObjects)
+            {
+                if (networkObj != null && networkObj.IsSpawned)
+                {
+                    networkObj.Despawn(true);
+                }
+            }
         }
     }
 }

@@ -24,6 +24,7 @@ namespace AvatarChat.Network.Handlers
         private Dictionary<ulong, NetworkGuid> _playerToRoomMap = new();
         private Dictionary<NetworkGuid, Scene> _serverRoomScenes = new();
         private Dictionary<NetworkGuid, Scene> _clientRoomScenes = new();
+        private RoomPlayerList _localRoomPlayers = RoomPlayerList.Empty;
 
         private readonly object _roomLock = new();
         private readonly object _clientSceneLock = new();
@@ -45,7 +46,6 @@ namespace AvatarChat.Network.Handlers
             if (IsServer && NetworkManager.Singleton != null)
                 NetworkManager.Singleton.OnClientDisconnectCallback -= OnServerClientDisconnect;
 
-            // Очистка всех токенов отмены при уничтожении
             foreach (var cts in _loadingCancellations.Values)
             {
                 cts.Cancel();
@@ -79,6 +79,18 @@ namespace AvatarChat.Network.Handlers
 
         private bool HasSuffix(string roomName) => roomName.Contains("_");
 
+        private bool IsPlayerInRoom(ulong clientId) => _playerToRoomMap.ContainsKey(clientId);
+
+        private bool TryRejectIfAlreadyInRoom(ulong clientId)
+        {
+            if (IsPlayerInRoom(clientId))
+            {
+                Debug.LogError($"[NetworkRoomHandler] Player {clientId} is already in a room. Operation rejected.");
+                return true;
+            }
+            return false;
+        }
+
         public void RequestJoinOrCreateRoom(FixedString128Bytes roomName, int maxPlayers)
         {
             JoinOrCreateRoomServerRpc(roomName, maxPlayers);
@@ -88,6 +100,9 @@ namespace AvatarChat.Network.Handlers
         private void JoinOrCreateRoomServerRpc(FixedString128Bytes roomName, int maxPlayers, RpcParams rpcParams = default)
         {
             var senderId = rpcParams.Receive.SenderClientId;
+            
+            if (TryRejectIfAlreadyInRoom(senderId)) return;
+            
             NetworkGuid targetInstance = GetOrCreateRoomInternal(roomName, maxPlayers);
             JoinRoomInternal(targetInstance, senderId).Forget();
         }
@@ -172,6 +187,8 @@ namespace AvatarChat.Network.Handlers
 
             var spawnHandler = _networkHandler.GetSubHandler<NetworkSpawnHandler>();
             spawnHandler?.TrackPlayerRoom(clientId, instanceId);
+
+            SyncRoomPlayers(instanceId);
 
             if (!_serverRoomScenes.ContainsKey(instanceId))
             {
@@ -341,9 +358,13 @@ namespace AvatarChat.Network.Handlers
 
             var room = ActiveRooms[index];
             room.CurrentPlayers = remaining;
-            
+
             Debug.Log($"[NetworkRoomHandler] Player {clientId} left room {instanceId}. Remaining: {remaining}");
-            
+
+            SyncRoomPlayers(instanceId);
+
+            _signalBus.Fire(new PlayerLeftRoomSignal(clientId, instanceId.ToString()));
+
             if (room.CurrentPlayers <= 0)
             {
                 Debug.Log($"[NetworkRoomHandler] Room {instanceId} is empty, removing...");
@@ -359,6 +380,19 @@ namespace AvatarChat.Network.Handlers
         private void LeaveRoomServerRpc(NetworkGuid instanceId, RpcParams rpcParams = default)
         {
             var clientId = rpcParams.Receive.SenderClientId;
+            
+            if (!_playerToRoomMap.TryGetValue(clientId, out NetworkGuid currentRoomId))
+            {
+                Debug.LogError($"[NetworkRoomHandler] Player {clientId} is not in any room. Cannot leave.");
+                return;
+            }
+            
+            if (!currentRoomId.Equals(instanceId))
+            {
+                Debug.LogError($"[NetworkRoomHandler] Player {clientId} is not in room {instanceId}. Cannot leave.");
+                return;
+            }
+            
             HandlePlayerExit(instanceId, clientId);
 
             ConfirmActionClientRpc(instanceId, false, RpcTarget.Single(clientId, RpcTargetUse.Temp));
@@ -377,12 +411,51 @@ namespace AvatarChat.Network.Handlers
         {
             if (_clientRoomScenes.TryGetValue(instanceId, out Scene scene))
             {
-                if (scene.isLoaded) SceneManager.UnloadSceneAsync(scene);
-                _clientRoomScenes.Remove(instanceId);
+                if (scene.isLoaded)
+                    _ = UnloadRoomSceneDelayed();
             }
 
-            _signalBus.Fire(new PlayerLeftRoomSignal(NetworkManager.Singleton.LocalClientId, instanceId.ToString()));
+            _localRoomPlayers = RoomPlayerList.Empty;
         }
+
+        private async UniTaskVoid UnloadRoomSceneDelayed()
+        {
+            await UniTask.Delay(100);
+            foreach (var scene in _clientRoomScenes.Values)
+            {
+                if (scene.isLoaded)
+                    SceneManager.UnloadSceneAsync(scene);
+            }
+            _clientRoomScenes.Clear();
+        }
+
+        private void SyncRoomPlayers(NetworkGuid instanceId)
+        {
+            if (!IsServer) return;
+
+            var playerIds = new List<ulong>();
+            foreach (var kv in _playerToRoomMap)
+            {
+                if (kv.Value.Equals(instanceId))
+                    playerIds.Add(kv.Key);
+            }
+
+            var roomPlayerList = new RoomPlayerList
+            {
+                RoomId = instanceId,
+                PlayerIds = playerIds.ToArray()
+            };
+
+            SyncRoomPlayersClientRpc(roomPlayerList);
+        }
+
+        [Rpc(SendTo.ClientsAndHost)]
+        private void SyncRoomPlayersClientRpc(RoomPlayerList roomPlayerList)
+        {
+            _localRoomPlayers = roomPlayerList;
+        }
+
+        public RoomPlayerList GetRoomPlayers() => _localRoomPlayers;
 
         public void RequestCreateRoom(FixedString128Bytes roomName, int maxPlayers) => CreateRoomServerRpc(roomName, maxPlayers);
         public void RequestJoinRoom(NetworkGuid instanceId) => JoinRoomServerRpc(instanceId);
@@ -392,6 +465,9 @@ namespace AvatarChat.Network.Handlers
         private void CreateRoomServerRpc(FixedString128Bytes roomName, int maxPlayers, RpcParams rpcParams = default)
         {
             var senderId = rpcParams.Receive.SenderClientId;
+            
+            if (TryRejectIfAlreadyInRoom(senderId)) return;
+            
             NetworkGuid targetInstance = GetOrCreateRoomInternal(roomName, maxPlayers);
             JoinRoomInternal(targetInstance, senderId).Forget();
         }
@@ -399,7 +475,11 @@ namespace AvatarChat.Network.Handlers
         [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
         private void JoinRoomServerRpc(NetworkGuid instanceId, RpcParams rpcParams = default)
         {
-            JoinRoomInternal(instanceId, rpcParams.Receive.SenderClientId).Forget();
+            var senderId = rpcParams.Receive.SenderClientId;
+            
+            if (TryRejectIfAlreadyInRoom(senderId)) return;
+            
+            JoinRoomInternal(instanceId, senderId).Forget();
         }
 
         public void RemoveRoom(NetworkGuid instanceId)
@@ -437,6 +517,7 @@ namespace AvatarChat.Network.Handlers
         {
             if (_playerToRoomMap.TryGetValue(ownerClientId, out NetworkGuid instanceId))
                 return GetRoom(instanceId);
+
             return NetworkRoom.Empty;
         }
 
