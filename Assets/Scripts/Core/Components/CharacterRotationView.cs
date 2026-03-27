@@ -115,7 +115,7 @@ namespace AvatarChat.Core.Components
 
         private void Update()
         {
-            if (IsOwner)
+            if (IsOwner && Application.isFocused)
             {
                 HandleLookInput();
             }
@@ -126,6 +126,10 @@ namespace AvatarChat.Core.Components
             if (Camera.main == null) return;
 
             Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+            if (IsPointerOverCharacter(mouseWorldPos))
+                return;
+
             Vector2 directionVector = (mouseWorldPos - (Vector2)transform.position).normalized;
 
             CharacterDirectionType newDirection = CalculateDirection(directionVector);
@@ -138,6 +142,11 @@ namespace AvatarChat.Core.Components
             }
         }
 
+        private bool IsPointerOverCharacter(Vector2 mouseWorldPos)
+        {
+            Collider2D hit = Physics2D.OverlapPoint(mouseWorldPos);
+            return hit != null && hit.transform == transform;
+        }
         private CharacterDirectionType CalculateDirection(Vector2 dir)
         {
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;

@@ -19,6 +19,14 @@ namespace AvatarChat.Network.Handlers
 
         private readonly List<SubNetworkHandler> _subHandlers = new();
 
+        private void Start()
+        {
+             if (Application.isBatchMode)
+            {
+                StartServer();
+            }
+        }
+
         public T GetSubHandler<T>()
         {
             if (_subHandlers.Count == 0) FindSubHandlers();
