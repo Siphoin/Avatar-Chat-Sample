@@ -35,7 +35,18 @@ namespace AvatarChat.UI.Handlers
                 .AddTo(_disposable);
         }
 
-        private void OnDisable() => _disposable.Clear();
+        private void OnDisable()
+        {
+            foreach (var view in _activeViews.Values)
+            {
+                if (view != null && view is MonoBehaviour mb && mb.gameObject != null)
+                {
+                    mb.gameObject.SetActive(false);
+                }
+            }
+            _activeViews.Clear();
+            _disposable.Clear();
+        }
 
         private void OnNewMessage(NewChatMessageSignal signal)
         {
@@ -48,10 +59,14 @@ namespace AvatarChat.UI.Handlers
 
             var container = character.GetComponentInChildren<CharacterMessageContainerView>()?.transform;
 
+            if (container == null) return;
+
             MessageViewBase prefab = GetPrefab(message.Type);
             if (prefab == null) return;
 
             var view = _viewFactory.Create(prefab, Vector3.zero, Quaternion.identity, container);
+
+            if (view == null) return;
 
             view.SetMessage(message);
             view.SetStateVisible(true);
@@ -64,7 +79,10 @@ namespace AvatarChat.UI.Handlers
             var id = signal.Message.InstanceId;
             if (_activeViews.TryGetValue(id, out var view))
             {
-                view.SetStateVisible(false);
+                if (view != null && view is MonoBehaviour mb && mb != null && mb.gameObject != null)
+                {
+                    view.SetStateVisible(false);
+                }
                 _activeViews.Remove(id);
             }
         }

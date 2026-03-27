@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using System.Threading;
+using UnityEngine.EventSystems;
+using AvatarChat.Extensions;
 
 namespace AvatarChat.Core.Components
 {
@@ -115,7 +117,7 @@ namespace AvatarChat.Core.Components
 
         private void Update()
         {
-            if (IsOwner && Application.isFocused)
+            if (IsOwner && Application.isFocused && !EventSystem.current.IsPointerOverUIObject())
             {
                 HandleLookInput();
             }

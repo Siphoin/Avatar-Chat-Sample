@@ -46,7 +46,13 @@ namespace AvatarChat.UI.Animations
             _activeSequence.Join(_rectTransform.DOScale(_animConfig.StartScale, _animConfig.Duration)
                 .SetEase(Ease.InBack));
 
-            _activeSequence.OnComplete(() => onComplete?.Invoke());
+            _activeSequence.OnComplete(() =>
+            {
+                if (gameObject != null)
+                {
+                    onComplete?.Invoke();
+                }
+            });
         }
 
         private void OnDestroy()

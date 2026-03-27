@@ -34,6 +34,8 @@ namespace AvatarChat.UI.Views
 
         public void SetStateVisible(bool visible)
         {
+            if (this == null || gameObject == null) return;
+
             if (visible)
             {
                 gameObject.SetActive(true);
@@ -46,7 +48,13 @@ namespace AvatarChat.UI.Views
             {
                 if (_animation != null && gameObject.activeInHierarchy)
                 {
-                    _animation.Hide(() => FinalizeHide());
+                    _animation.Hide(() =>
+                    {
+                        if (this != null && gameObject != null && gameObject.activeSelf)
+                        {
+                            FinalizeHide();
+                        }
+                    });
                 }
                 else
                 {
@@ -57,13 +65,15 @@ namespace AvatarChat.UI.Views
 
         private void FinalizeHide()
         {
+            if (this == null || _startParent == null || transform == null || gameObject == null) return;
+
             transform.SetParent(_startParent, false);
             gameObject.SetActive(false);
         }
 
         private void UpdateTransparency()
         {
-            if (_background == null) return;
+            if (_background == null || transform == null || transform.parent == null) return;
 
             bool isLastChild = transform.GetSiblingIndex() == transform.parent.childCount - 1;
 

@@ -263,5 +263,20 @@ namespace AvatarChat.Network.Handlers
 
         public IReadOnlyList<NetworkMessage> GetHistory()
             => NetworkManager.Singleton.IsServer ? new List<NetworkMessage>() : _localClientMessages;
+
+        public string GetMessageTextByIndex(int index)
+        {
+            var history = GetHistory();
+            if (index < 0 || index >= history.Count)
+                return string.Empty;
+
+            var message = history[index];
+            return message.Type == MessageType.Text 
+                ? System.Text.Encoding.UTF8.GetString(message.Data) 
+                : string.Empty;
+        }
+
+        public int GetHistoryCount()
+            => GetHistory().Count;
     }
 }

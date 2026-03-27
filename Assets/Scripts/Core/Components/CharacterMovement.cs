@@ -1,7 +1,9 @@
-﻿using Sirenix.OdinInspector;
+﻿using AvatarChat.Extensions;
+using Sirenix.OdinInspector;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace AvatarChat.Core.Components
 {
@@ -16,6 +18,7 @@ namespace AvatarChat.Core.Components
         private Vector2 _clientPredictedTarget;
         private Vector2 _lastServerPosition;
         private bool _hasServerPosition;
+        private EventSystem _eventSystem;
 
         private readonly NetworkVariable<Vector2> _serverTargetPosition = new(
             readPerm: NetworkVariableReadPermission.Everyone,
@@ -25,6 +28,8 @@ namespace AvatarChat.Core.Components
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
+
+            _eventSystem = EventSystem.current;
 
             int characterLayer = LayerMask.NameToLayer("Character");
             if (characterLayer != -1)
@@ -110,6 +115,11 @@ namespace AvatarChat.Core.Components
         {
             if (Input.GetMouseButtonDown(0))
             {
+                if (_eventSystem != null && _eventSystem.IsPointerOverUIObject())
+                {
+                    return;
+                }
+
                 Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 _clientPredictedTarget = mouseWorldPos;
                 RequestMoveServerRpc(mouseWorldPos);
