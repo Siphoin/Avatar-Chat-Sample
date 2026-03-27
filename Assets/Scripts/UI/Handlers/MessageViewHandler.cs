@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using AvatarChat.Core.Components;
+using AvatarChat.Main;
 using AvatarChat.Network.Models;
 using AvatarChat.Network.Signals;
+using AvatarChat.UI.Configs;
 using AvatarChat.UI.Factories;
 using AvatarChat.UI.Views;
-using AvatarChat.Core.Components;
-using AvatarChat.Main;
-using AvatarChat.UI.Configs;
 using ObjectRepositories.Extensions;
-using UnityEngine;
-using Zenject;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UniRx;
+using UnityEngine;
+using UnityEngine.Rendering;
+using Zenject;
 
 namespace AvatarChat.UI.Handlers
 {
@@ -24,8 +25,12 @@ namespace AvatarChat.UI.Handlers
         private readonly Dictionary<Guid, IMessageView> _activeViews = new();
         private readonly CompositeDisposable _disposable = new();
 
+        private bool IsServer => SystemInfo.graphicsDeviceType == GraphicsDeviceType.Null;
+
         private void OnEnable()
         {
+            if (IsServer) return;
+
             _signalBus.GetStream<NewChatMessageSignal>()
                 .Subscribe(OnNewMessage)
                 .AddTo(_disposable);
@@ -39,7 +44,7 @@ namespace AvatarChat.UI.Handlers
         {
             foreach (var view in _activeViews.Values)
             {
-                if (view != null && view is MonoBehaviour mb && mb.gameObject != null)
+                if (view != null && view is MonoBehaviour mb && mb != null && mb.gameObject != null)
                 {
                     mb.gameObject.SetActive(false);
                 }
@@ -50,6 +55,8 @@ namespace AvatarChat.UI.Handlers
 
         private void OnNewMessage(NewChatMessageSignal signal)
         {
+            if (IsServer) return;
+
             var message = signal.Message;
 
             var character = this.FindObjectsOfTypeOnRepository<Character>()
@@ -79,7 +86,7 @@ namespace AvatarChat.UI.Handlers
             var id = signal.Message.InstanceId;
             if (_activeViews.TryGetValue(id, out var view))
             {
-                if (view != null && view is MonoBehaviour mb && mb != null && mb.gameObject != null)
+                if (view != null && view is MonoBehaviour mb && mb != null)
                 {
                     view.SetStateVisible(false);
                 }

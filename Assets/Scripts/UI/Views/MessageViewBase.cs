@@ -34,23 +34,26 @@ namespace AvatarChat.UI.Views
 
         public void SetStateVisible(bool visible)
         {
-            if (this == null || gameObject == null) return;
+            if (this == null) return;
 
             if (visible)
             {
-                gameObject.SetActive(true);
-                if (_animation != null)
+                if (gameObject != null)
                 {
-                    _animation.Play();
+                    gameObject.SetActive(true);
+                    if (_animation != null)
+                    {
+                        _animation.Play();
+                    }
                 }
             }
             else
             {
-                if (_animation != null && gameObject.activeInHierarchy)
+                if (_animation != null && gameObject != null && gameObject.activeInHierarchy)
                 {
                     _animation.Hide(() =>
                     {
-                        if (this != null && gameObject != null && gameObject.activeSelf)
+                        if (this != null && gameObject != null)
                         {
                             FinalizeHide();
                         }
@@ -65,15 +68,19 @@ namespace AvatarChat.UI.Views
 
         private void FinalizeHide()
         {
-            if (this == null || _startParent == null || transform == null || gameObject == null) return;
+            if (this == null || gameObject == null) return;
 
-            transform.SetParent(_startParent, false);
+            if (_startParent != null)
+            {
+                transform.SetParent(_startParent, false);
+            }
+
             gameObject.SetActive(false);
         }
 
         private void UpdateTransparency()
         {
-            if (_background == null || transform == null || transform.parent == null) return;
+            if (this == null || _background == null || transform == null || transform.parent == null) return;
 
             bool isLastChild = transform.GetSiblingIndex() == transform.parent.childCount - 1;
 

@@ -1,11 +1,9 @@
-
 using AvatarChat.Core.InputSystem;
 using AvatarChat.Network.Handlers;
 using Sirenix.OdinInspector;
 using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 using Zenject;
 
@@ -15,11 +13,10 @@ namespace AvatarChat.UI.Views
     {
         [SerializeField, ReadOnly] private TMP_InputField _inputField;
         [SerializeField] private Button _sendButton;
-        
+
         [Inject] private INetworkHandler _networkHandler;
         [Inject] private Core.InputSystem.IInputSystem _inputSystem;
 
-        private bool _isInputActive;
         private int _historyIndex = -1;
         private string _originalText = string.Empty;
 
@@ -32,10 +29,8 @@ namespace AvatarChat.UI.Views
 
             if (_inputField != null)
             {
-                _inputField.onEndEdit.AddListener(OnInputEndEdit);
                 _inputField.onValueChanged.AddListener(OnInputValueChanged);
-                _inputField.onSelect.AddListener(OnInputFocused);
-                _inputField.onDeselect.AddListener(OnInputLostFocus);
+                _inputField.onSubmit.AddListener(OnInputSubmit);
             }
 
             _inputSystem.AddListener(OnKeyDown, StandaloneInputEventType.KeyDown, true);
@@ -46,43 +41,33 @@ namespace AvatarChat.UI.Views
             if (_sendButton != null)
             {
                 _sendButton.onClick.RemoveListener(OnSendButtonClicked);
+                _inputField.onSubmit.RemoveListener(OnInputSubmit);
             }
 
             if (_inputField != null)
             {
-                _inputField.onEndEdit.RemoveListener(OnInputEndEdit);
                 _inputField.onValueChanged.RemoveListener(OnInputValueChanged);
-                _inputField.onSelect.RemoveListener(OnInputFocused);
-                _inputField.onDeselect.RemoveListener(OnInputLostFocus);
             }
 
             _inputSystem.RemoveListener(OnKeyDown, StandaloneInputEventType.KeyDown);
         }
 
-        private void OnInputLostFocus(string arg0)
+        private void OnInputSubmit(string text)
         {
-            _isInputActive = false;
-        }
-
-        private void OnInputFocused(string arg0)
-        {
-            _isInputActive = true;
+            SendCurrentMessage();
         }
 
         private void OnKeyDown(KeyCode keyCode)
         {
-            Debug.Log(keyCode);
+            if (_inputField == null || !_inputField.isFocused) return;
+
             switch (keyCode)
             {
-
-                case KeyCode.Return or KeyCode.KeypadEnter when _isInputActive && _inputField?.isFocused == true:
-                    SendCurrentMessage();
-                    break;
-                case KeyCode.UpArrow when _isInputActive:
+                case KeyCode.UpArrow:
                     NavigateHistory(1);
                     break;
 
-                case KeyCode.DownArrow when _isInputActive:
+                case KeyCode.DownArrow:
                     NavigateHistory(-1);
                     break;
             }
@@ -144,16 +129,6 @@ namespace AvatarChat.UI.Views
             SendCurrentMessage();
         }
 
-        private void OnInputEndEdit(string value)
-        {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                return;
-            }
-
-            SendCurrentMessage();
-        }
-
         private void SendCurrentMessage()
         {
             if (_inputField == null) return;
@@ -163,13 +138,15 @@ namespace AvatarChat.UI.Views
             if (!string.IsNullOrEmpty(message))
             {
                 var chatHandler = _networkHandler.GetSubHandler<NetworkChatHandler>();
-                chatHandler.SendTextMessage(message);
+                chatHandler?.SendTextMessage(message);
+
+                _inputField.text = string.Empty;
+                _historyIndex = -1;
+                _originalText = string.Empty;
             }
 
-            _inputField.text = string.Empty;
-            _historyIndex = -1;
-            _originalText = string.Empty;
             _inputField.ActivateInputField();
+            _inputField.Select();
         }
 
         public void Dispose()
